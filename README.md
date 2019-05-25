@@ -41,7 +41,7 @@ pip install mkdocs_index_plugin-1.0.0-py2-none-any.whl
 plugins: 
     - search
     - mkdocs-index-plugin:
-        strict_mode: False # 模式选项
+        strict_mode: False # 模式选项，True或False
 ```
 
 
@@ -91,6 +91,6 @@ Add this plugin to the `plugins` option in the `mkdocs.yml` file:
 plugins: 
     - search
     - mkdocs-index-plugin:
-        strict_mode: False # 模式选项
+        strict_mode: False # mode，True or False
 ```
 
