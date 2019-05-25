@@ -31,11 +31,8 @@ class AddIndexPlugin(BasePlugin):
 
         keys = sorted(tmp_lines.keys())
         tmp_lines_values = []
-        with open('before.log', 'a') as f:
-            for key in keys:
-                tmp_lines_values.append(tmp_lines[key])
-                f.write(tmp_lines[key].encode('utf-8'))
-                f.write('\n\n')
+        for key in keys:
+            tmp_lines_values.append(tmp_lines[key])
 
         if self.config['strict_mode']:
             tmp_lines_values, _ = self._searchN(tmp_lines_values, 1, 0, 1, [], self._searchN)
@@ -44,19 +41,13 @@ class AddIndexPlugin(BasePlugin):
             # tmp_lines_values = self._ascent(tmp_lines_values, [0], 1, [], 0, 0)
 
         n = 0
-        with open('after.log', 'a') as f:
-            for key in keys:
-                lines[key] = tmp_lines_values[n]
-                f.write(tmp_lines_values[n].encode('utf-8'))
-                f.write('\n\n')
-                n += 1
+        for key in keys:
+            lines[key] = tmp_lines_values[n]
+            n += 1
 
         return '\n'.join(lines)
 
     def _ascent(self, tmp_lines, parent_nums_head, level, args, num, startrow):
-        with open('ascent.log', 'a') as f:
-            f.write("tmp_lines: \n\t{}\nparent_nums_head: \n\t{}\nlevel, args, num, startrow: \n\t{}, {}, {}, {}\n\n".
-                    format(tmp_lines.__str__().encode('utf-8'), parent_nums_head, level, args, num, startrow))
 
         if startrow == len(tmp_lines):
             return tmp_lines

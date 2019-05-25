@@ -14,7 +14,7 @@ setup(
                      'You could edit head level in ascending order.The example above is allowed, it will be convert to'
                      ' "# 1 first\\n### 1.1 third\\n# 2 first2".\n',
     keywords='mkdocs index plugin',
-    url='',
+    url='https://github.com/shihr/mkdocs-index-plugin.git',
     author='shihr',
     author_email='shrshraa@outlook.com',
     license='MIT',
