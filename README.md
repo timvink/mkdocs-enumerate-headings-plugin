@@ -17,7 +17,7 @@
 
 ![](img/strict_mode.png)
 
-**注意**：两种模式的标题级数都不能有倒序出现。比如`### title1\n# title2\n`，这会导致编号异常。
+**注意**：两种模式的标题级数都不能有倒序出现。比如`### title1\n# title2\n`，这会导致编号异常。并且每个标题后面都要有空格与文字隔开，比如这样`# title`是正确的，而这样`#title`是不行的。
 
 ## 安装
 
@@ -67,7 +67,7 @@ Strict mode effect:
 
 ![](img/strict_mode.png)
 
-**Note**: The title levels of both modes cannot be reversed. For example `### title1\n# title2\n`, this will cause the number to be abnormal.
+**Note**: The title levels of both modes cannot be reversed. For example `### title1\n# title2\n`, this will cause the number to be abnormal.And each title must be separated by a space after the text, such as `# title` is correct, and such `#title` is not acceptable.
 
 ## installation
 
