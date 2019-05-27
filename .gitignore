@@ -1,1 +1,4 @@
 wheels/
+mkdocs_index_plugin.egg-info/
+build/
+dist/
