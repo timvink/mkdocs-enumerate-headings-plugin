@@ -1,4 +1,4 @@
-# mkdocs-index-plugin
+# mkdocs-add-number-plugin
 
 一个mkdocs插件：为你的每个页面的标题（h1~h6）自动编号。这只影响你的html渲染结果，并不影响mkdown文档！
 
@@ -20,17 +20,24 @@
 **注意**：两种模式的标题级数都不能有倒序出现。比如`### title1\n# title2\n`，这会导致编号异常。并且每个标题后面都要有空格与文字隔开，比如这样`# title`是正确的，而这样`#title`是不行的。
 
 ## 安装
-
+有以下两种方法：
+### 1. 从源码构建安装
 克隆此项目到你的计算机上，然后执行以下命令：
 
 ```shell
-cd mkdocs-index-plugin
+cd mkdocs-add-number-plugin
 mkdir wheels
 cd wheels
 # if you have installed the plugin
-# pip uninstall mkdocs-index-plugin -y
+# pip uninstall mkdocs-add-number-plugin -y
 pip wheel ..
-pip install mkdocs_index_plugin-1.0.0-py2-none-any.whl
+pip install mkdocs_add_number_plugin-1.0.0-py2-none-any.whl
+```
+
+### 2. 使用 pip 安装
+
+```shell
+pip install mkdocs-add-number-plugin
 ```
 
 ## 使用
@@ -40,7 +47,7 @@ pip install mkdocs_index_plugin-1.0.0-py2-none-any.whl
 ```yaml
 plugins: 
     - search
-    - mkdocs-index-plugin:
+    - mkdocs-add-number-plugin:
         strict_mode: False # 模式选项，True或False
 ```
 
@@ -48,7 +55,7 @@ plugins:
 
 --------------------------------The following is an English description that using Google Translate----------------------------
 
-# mkdocs-index-plugin
+# mkdocs-add-number-plugin
 
 A mkdocs plugin: Automatically number the title (h1~h6) of each page you have.This only affects your html rendering results and does not affect the mkdown documentation!
 
@@ -70,27 +77,34 @@ Strict mode effect:
 **Note**: The title levels of both modes cannot be reversed. For example `### title1\n# title2\n`, this will cause the number to be abnormal.And each title must be separated by a space after the text, such as `# title` is correct, and such `#title` is not acceptable.
 
 ## installation
-
+There are two ways as following:
+### 1. install wheel from source code
 Clone this project to your computer and execute the following command:
 
 ```shell
-cd mkdocs-index-plugin
+cd mkdocs-add-number-plugin
 mkdir wheels
 cd wheels
 # if you have installed the plugin，execute this：
-# pip uninstall mkdocs-index-plugin -y
+# pip uninstall mkdocs-add-number-plugin -y
 pip wheel ..
-pip install mkdocs_index_plugin-1.0.0-py2-none-any.whl
+pip install mkdocs_add-number_plugin-1.0.0-py2-none-any.whl
 ```
 
-## Instructions
+### 2. use pip
+
+```shell
+pip install mkdocs-add-number-plugin
+```
+
+## Usage
 
 Add this plugin to the `plugins` option in the `mkdocs.yml` file:
 
 ```yml
 plugins: 
     - search
-    - mkdocs-index-plugin:
+    - mkdocs-add-number-plugin:
         strict_mode: False # mode，True or False
 ```
 
