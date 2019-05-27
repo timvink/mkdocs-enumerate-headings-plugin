@@ -1,20 +1,21 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='mkdocs-index-plugin',
+    name='mkdocs-add-number-plugin',
     version='1.0.0',
-    description='A MkDocs plugin to add index to titles of every page.',
-    long_description='A MkDocs plugin to add index to titles of every page.\n'
-                     '[options]:\n'
-                     'strict_mode: True\n'
-                     '     In this mode, you must edit head from h1 level by level, '
+    description='A MkDocs plugin to add number to titles of every page.',
+    long_description='A MkDocs plugin to add number to titles of every page.<br>'
+                     '[options]:<br>'
+                     'strict_mode: True<br>'
+                     '- In this mode, you must edit head from h1 level by level,'
                      'such as "# first\\n## second\\n# first2".'
-                     'Not allowed to over level, such as "# first\\n### third\\n# first2".\n'
-                     '     Otherwise, if you do not deternmine the option or False.'
+                     'Not allowed to over level, such as "# first\\n### third\\n# first2".<br>'
+                     '- Otherwise, if you do not deternmine the option or False.'
                      'You could edit head level in ascending order.The example above is allowed, it will be convert to'
-                     ' "# 1 first\\n### 1.1 third\\n# 2 first2".\n',
-    keywords='mkdocs index plugin',
-    url='https://github.com/shihr/mkdocs-index-plugin.git',
+                     ' "# 1 first\\n### 1.1 third\\n# 2 first2".',
+    long_description_content_type='text/markdown',
+    keywords='mkdocs index add-number plugin',
+    url='https://github.com/shihr/mkdocs-add-number-plugin.git',
     author='shihr',
     author_email='shrshraa@outlook.com',
     license='MIT',
@@ -23,7 +24,7 @@ setup(
         'mkdocs>=1.0.4'
     ],
     classifiers=[
-        'Development Status :: 1 - Beta',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
         'License :: OSI Approved :: MIT License',
@@ -37,7 +38,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'mkdocs.plugins': [
-            'mkdocs-index-plugin=mkdocs_index_plugin.plugin:AddIndexPlugin'
+            'mkdocs-add-number-plugin=mkdocs_add_number_plugin.plugin:AddIndexPlugin'
         ]
     }
 )
