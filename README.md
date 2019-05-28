@@ -127,7 +127,7 @@ cd wheels
 # if you have installed the plugin
 # pip uninstall mkdocs-add-number-plugin -y
 pip wheel ..
-pip install mkdocs_add_number_plugin-1.0.0-py2-none-any.whl
+pip install mkdocs_add_number_plugin-*-py2-none-any.whl
 ```
 
 ### 使用 pip 安装
@@ -288,7 +288,7 @@ cd wheels
 # if you have installed the plugin，execute this：
 # pip uninstall mkdocs-add-number-plugin -y
 pip wheel ..
-pip install mkdocs_add-number_plugin-1.0.0-py2-none-any.whl
+pip install mkdocs_add-number_plugin-*-py2-none-any.whl
 ```
 
 ### use pip
