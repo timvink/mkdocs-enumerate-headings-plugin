@@ -2,3 +2,4 @@ wheels/
 *.egg-info/
 build/
 dist/
+.idea/

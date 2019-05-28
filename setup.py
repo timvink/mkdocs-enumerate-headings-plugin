@@ -2,17 +2,15 @@ from setuptools import setup, find_packages
 
 setup(
     name='mkdocs-add-number-plugin',
-    version='1.0.0',
-    description='A MkDocs plugin to add number to titles of every page.',
-    long_description='A MkDocs plugin to add number to titles of every page.<br>'
+    version='1.1.0',
+    description='A MkDocs plugin to add number to titles of page.',
+    long_description='A MkDocs plugin to add number to titles of page.<br>'
                      '[options]:<br>'
-                     'strict_mode: True<br>'
-                     '- In this mode, you must edit head from h1 level by level,'
-                     'such as "# first\\n## second\\n# first2".'
-                     'Not allowed to over level, such as "# first\\n### third\\n# first2".<br>'
-                     '- Otherwise, if you do not deternmine the option or False.'
-                     'You could edit head level in ascending order.The example above is allowed, it will be convert to'
-                     ' "# 1 first\\n### 1.1 third\\n# 2 first2".',
+                     'strict_mode: True|False<br>'
+                     'order: number<br>'
+                     'excludes: list|"*"<br>'
+                     'includes: list<br><br>'
+                     'For detailed usage, please refer to `Homepage`',
     long_description_content_type='text/markdown',
     keywords='mkdocs index add-number plugin',
     url='https://github.com/shihr/mkdocs-add-number-plugin.git',
