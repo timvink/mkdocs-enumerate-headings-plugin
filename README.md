@@ -133,6 +133,8 @@ pip install mkdocs_add_number_plugin-*-py2-none-any.whl
 ### 使用 pip 安装
 
 ```shell
+# if you have installed the plugin
+# pip uninstall mkdocs-add-number-plugin -y
 pip install mkdocs-add-number-plugin
 ```
 
@@ -294,6 +296,8 @@ pip install mkdocs_add-number_plugin-*-py2-none-any.whl
 ### use pip
 
 ```shell
+# if you have installed the plugin
+# pip uninstall mkdocs-add-number-plugin -y
 pip install mkdocs-add-number-plugin
 ```
 
