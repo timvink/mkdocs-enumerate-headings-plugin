@@ -1,3 +1,9 @@
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/mkdocs-add-number-plugin)
+![PyPI](https://img.shields.io/pypi/v/mkdocs-add-number-plugin)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/mkdocs-add-number-plugin)
+![GitHub contributors](https://img.shields.io/github/contributors/timvink/mkdocs-add-number-plugin)
+![PyPI - License](https://img.shields.io/pypi/l/mkdocs-add-number-plugin)
+
 # mkdocs-add-number-plugin
 
 一个mkdocs插件：为你的每个页面的标题（h1~h6）自动编号。**这只影响你的html渲染结果，并不影响markdown文档本身！**

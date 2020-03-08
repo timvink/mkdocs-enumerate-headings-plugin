@@ -1,22 +1,23 @@
 # coding=utf-8
 import os
+import re
 
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
-
+from .utils import flatten
+from . import markdown as md
 
 class AddIndexPlugin(BasePlugin):
     config_scheme = (
         ('strict_mode', config_options.Type(bool, default=False)),
+        ('increment_pages', config_options.Type(bool, default=True)),
         ('excludes', config_options.Type(list, default=[])),
         ('includes', config_options.Type(list, default=[])),
         ('order', config_options.Type(int, default=1))
     )
 
     def __init__(self):
-        self.enabled = True
         self._has_load_conf = False
-        self._oder = None
 
     def _init(self):
         if not self._has_load_conf:
@@ -38,6 +39,28 @@ class AddIndexPlugin(BasePlugin):
             #         self._excludes, self._exclude_files, self._exclude_files))
             self._has_load_conf = True
 
+    def on_files(self, files, config):
+        """
+        The files event is called after the files collection is populated from the docs_dir. 
+        Use this event to add, remove, or alter files in the collection.
+        """
+        
+        # Use navigation if set, 
+        # (see https://www.mkdocs.org/user-guide/configuration/#nav)
+        # only these pages will be displayed. 
+        nav = config.get('nav', None)
+        if nav:
+            pages = flatten(nav)
+        # Otherwise, take all source markdown pages
+        else:
+            pages = [
+                file.src_path for file in files if file.is_documentation_page()
+            ]
+    
+        # TODO: remove includes/excluded from this.
+        
+        return files
+        
     def on_page_markdown(self, markdown, page, config, files):
         self._init()
 
@@ -45,35 +68,30 @@ class AddIndexPlugin(BasePlugin):
             return markdown
 
         lines = markdown.split('\n')
-        line_length = len(lines)
-        tmp_lines = {}
-        n = 0
-        is_block = False
-
-        while n < line_length:
-            if lines[n].startswith('```'):
-                is_block = not is_block
-
-            if not is_block and lines[n].startswith('#'):
-                tmp_lines[n] = lines[n]
-            n += 1
-
-        if len(tmp_lines) <= self._order:
+        heading_lines = md.headings(lines)
+        
+        if len(heading_lines) <= self._order:
             return markdown
 
-        keys = sorted(tmp_lines.keys())
-        tmp_lines_values = []
-        for key in keys:
-            tmp_lines_values.append(tmp_lines[key])
+        tmp_lines_values = list(heading_lines.values())
 
         if self.config['strict_mode']:
             tmp_lines_values, _ = self._searchN(tmp_lines_values, 1, self._order, 1, [], self._searchN)
         else:
             tmp_lines_values = self._ascent(tmp_lines_values, [0], 0, [], 1, self._order)
             # tmp_lines_values = self._ascent(tmp_lines_values, [0], 1, [], 0, 0)
-
+        
+        # Set chapter number
+        if config.get('increment_pages', None):
+            # because lists start at 0 and not 1
+            chapter_number = self._enumerate_pages.index(page.file.src_path) + 1
+            tmp_lines_values = [
+                md.update_heading_chapter(l, chapter_number)
+                for l in tmp_lines_values
+            ]
+        
         n = 0
-        for key in keys:
+        for key in heading_lines.keys():
             lines[key] = tmp_lines_values[n]
             n += 1
 
@@ -83,7 +101,8 @@ class AddIndexPlugin(BasePlugin):
 
         if startrow == len(tmp_lines):
             return tmp_lines
-        nums_head = self._nums_head(tmp_lines[startrow])
+        
+        nums_head = md.heading_depth(tmp_lines[startrow])
         parent_nums = parent_nums_head[len(parent_nums_head) - 1]
 
         if nums_head < parent_nums:
@@ -111,13 +130,6 @@ class AddIndexPlugin(BasePlugin):
         re_str = (substr + "%d. " % nextnum) if (prenum_str == '') else (substr + "%s%d " % (prenum_str, nextnum))
         tmp_line = tmp_line.replace(substr, re_str)
         return tmp_line
-
-    def _nums_head(self, tmp_string):
-        n = 0
-        while tmp_string[n:n + 1] == '#':
-            n += 1
-
-        return n
 
     def _searchN(self, tmp_lines, num, start_row, level, args, func):
         while True:
