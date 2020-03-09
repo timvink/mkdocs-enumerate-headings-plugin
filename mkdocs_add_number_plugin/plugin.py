@@ -20,9 +20,6 @@ class AddIndexPlugin(BasePlugin):
         allowed_parameters = dict(self.config_scheme).keys()
         if set_parameters != allowed_parameters:
             unknown_parameters = [x for x in set_parameters if x not in allowed_parameters]
-            print(unknown_parameters)
-            print(set_parameters)
-            print(allowed_parameters)
             raise AssertionError("Unknown parameter(s) set: %s" % ", ".join(unknown_parameters))
 
     def on_files(self, files, config):
@@ -70,11 +67,7 @@ class AddIndexPlugin(BasePlugin):
         self._order = self.config['order'] - 1
         
         # Remove pages excluded from selection by user
-        print(f"excluded: {self._exclude_files} and {self._exclude_dirs}\n\n")
-        print(f"page urls: {[page.url for page in files]}")
         pages_to_remove = [page.file.src_path for page in files if self._is_exclude(page) and not self._is_include(page)]
-        print("\npages_to_remove\n")
-        print(pages_to_remove)
         self.pages = [page for page in pages if page not in pages_to_remove]
         
         return files
@@ -98,9 +91,6 @@ class AddIndexPlugin(BasePlugin):
         Returns:
             markdown (str): Markdown source text of page as string
         """
-        
-        # print(f"page.file.src_page is: {page.file.src_path}")
-        # print(f"self.pages is: {self.pages}")
         
         if page.file.src_path not in self.pages:
             return markdown
