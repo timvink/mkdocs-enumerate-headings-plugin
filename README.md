@@ -31,9 +31,10 @@ plugins:
 Example of multiple options set in the `mkdocs.yml` file:
 
 ```yml
-plugins: 
+plugins:
     - search
     - mkdocs-add-number-plugin:
+        increment_pages: True
         strict_mode: False
         order: 1
         excludes: 
@@ -47,6 +48,7 @@ plugins:
 
 ## Options
 
+- `increment_pages`: When set to `True` (default), will increment the chapter number of each page sequentially.
 - `strict_mode`:
    - When set to `False` (default), orders the title numbers in your HTML page sequentially
    - When set to `True` it will follow the headings order strictly. You must start writing documents from h1, and cannot skip headings (such as `# title1\n### title2\n`).
