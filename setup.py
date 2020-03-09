@@ -33,7 +33,8 @@ setup(
     packages=find_packages(),
     entry_points={
         'mkdocs.plugins': [
-            'mkdocs-add-number-plugin=mkdocs_add_number_plugin.plugin:AddIndexPlugin'
+            'mkdocs-add-number-plugin=mkdocs_add_number_plugin.plugin:AddNumberPlugin',
+            'add-number=mkdocs_add_number_plugin.plugin:AddNumberPlugin' 
         ]
     }
 )
