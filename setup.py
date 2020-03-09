@@ -6,9 +6,9 @@ with open("README.md", "r") as fh:
 setup(
     name='mkdocs-add-number-plugin',
     version='1.1.0',
-    description='A MkDocs plugin to add number to titles of page.',
+    description='MkDocs Plugin to automatically number the headings (h1-h6) in each markdown page.',
     long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     keywords='mkdocs index add-number plugin',
     url='https://github.com/shihr/mkdocs-add-number-plugin.git',
     author='shihr',
