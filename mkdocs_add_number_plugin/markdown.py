@@ -44,8 +44,11 @@ def heading_depth(line):
 def update_heading_chapter(line: str, chapter: int):
     pattern = re.compile(r"(^[\#].+)(1)(\..+)")
     matches = pattern.match(line)
-    return "%s%s%s" % (
-        matches.group(1),
-        str(chapter),
-        matches.group(3)
-    )
+    if not matches:
+        return line
+    else:
+        return "%s%s%s" % (
+            matches.group(1),
+            str(chapter),
+            matches.group(3)
+        )

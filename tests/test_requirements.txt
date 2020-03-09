@@ -1,0 +1,4 @@
+click
+mkdocs>=1.0.4
+pytest
+pytest-cov

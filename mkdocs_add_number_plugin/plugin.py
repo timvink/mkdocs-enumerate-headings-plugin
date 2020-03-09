@@ -1,6 +1,5 @@
 # coding=utf-8
 import os
-import re
 
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
@@ -15,35 +14,33 @@ class AddIndexPlugin(BasePlugin):
         ('includes', config_options.Type(list, default=[])),
         ('order', config_options.Type(int, default=1))
     )
-
-    def __init__(self):
-        self._has_load_conf = False
-
-    def _init(self):
-        if not self._has_load_conf:
-            self._excludes = self.config['excludes']
-            self._exclude_files = [os.path.normpath(file1) for file1 in self._excludes if not file1.endswith('\\')
-                                   and not file1.endswith('/')]
-            self._exclude_dirs = [os.path.normpath(dir1) for dir1 in self._excludes if dir1.endswith('\\')
-                                  or dir1.endswith('/')]
-
-            self._includes = self.config['includes']
-            self._include_files = [os.path.normpath(file1) for file1 in self._includes if not file1.endswith('\\')
-                                   and not file1.endswith('/')]
-            self._include_dirs = [os.path.normpath(dir1) for dir1 in self._includes if dir1.endswith('\\')
-                                  or dir1.endswith('/')]
-
-            self._order = self.config['order'] - 1
-            # with open('excludes.log', 'a') as f:
-            #     f.write("_excludes: {:s}\n_exclude_files: {:s}\n_exclude_files: {:s}\n\n".format(
-            #         self._excludes, self._exclude_files, self._exclude_files))
-            self._has_load_conf = True
+    
+    def _check_config_params(self):
+        set_parameters = self.config.keys()
+        allowed_parameters = dict(self.config_scheme).keys()
+        if set_parameters != allowed_parameters:
+            unknown_parameters = [x for x in set_parameters if x not in allowed_parameters]
+            print(unknown_parameters)
+            print(set_parameters)
+            print(allowed_parameters)
+            raise AssertionError("Unknown parameter(s) set: %s" % ", ".join(unknown_parameters))
 
     def on_files(self, files, config):
         """
         The files event is called after the files collection is populated from the docs_dir. 
         Use this event to add, remove, or alter files in the collection.
+        
+        See https://www.mkdocs.org/user-guide/plugins/#on_files
+        
+        Args:
+            files (list): list with pages (class Page)
+            config (dict): global configuration object
+            
+        Returns:
+            files (list): list with pages (class Page)
         """
+       
+        self._check_config_params()
         
         # Use navigation if set, 
         # (see https://www.mkdocs.org/user-guide/configuration/#nav)
@@ -54,17 +51,58 @@ class AddIndexPlugin(BasePlugin):
         # Otherwise, take all source markdown pages
         else:
             pages = [
-                file.src_path for file in files if file.is_documentation_page()
+                page.src_path for page in files if page.is_documentation_page()
             ]
     
-        # TODO: remove includes/excluded from this.
+        # Record excluded files from selection by user
+        self._excludes = self.config['excludes']
+        self._exclude_files = [os.path.normpath(file1) for file1 in self._excludes if not file1.endswith('\\')
+                                and not file1.endswith('/')]
+        self._exclude_dirs = [os.path.normpath(dir1) for dir1 in self._excludes if dir1.endswith('\\')
+                                or dir1.endswith('/')]
+
+        self._includes = self.config['includes']
+        self._include_files = [os.path.normpath(file1) for file1 in self._includes if not file1.endswith('\\')
+                                and not file1.endswith('/')]
+        self._include_dirs = [os.path.normpath(dir1) for dir1 in self._includes if dir1.endswith('\\')
+                                or dir1.endswith('/')]
+
+        self._order = self.config['order'] - 1
+        
+        # Remove pages excluded from selection by user
+        print(f"excluded: {self._exclude_files} and {self._exclude_dirs}\n\n")
+        print(f"page urls: {[page.url for page in files]}")
+        pages_to_remove = [page.file.src_path for page in files if self._is_exclude(page) and not self._is_include(page)]
+        print("\npages_to_remove\n")
+        print(pages_to_remove)
+        self.pages = [page for page in pages if page not in pages_to_remove]
         
         return files
         
     def on_page_markdown(self, markdown, page, config, files):
-        self._init()
-
-        if self._is_exclude(page) and not self._is_include(page):
+        """
+        The page_markdown event is called after the page's markdown is loaded 
+        from file and can be used to alter the Markdown source text. 
+        The meta- data has been stripped off and is available as page.meta 
+        at this point.
+        
+        See:
+        https://www.mkdocs.org/user-guide/plugins/#on_page_markdown
+        
+        Args:
+            markdown (str): Markdown source text of page as string
+            page (Page): mkdocs.nav.Page instance
+            config (dict): global configuration object
+            files (list): global files collection
+        
+        Returns:
+            markdown (str): Markdown source text of page as string
+        """
+        
+        # print(f"page.file.src_page is: {page.file.src_path}")
+        # print(f"self.pages is: {self.pages}")
+        
+        if page.file.src_path not in self.pages:
             return markdown
 
         lines = markdown.split('\n')
@@ -81,15 +119,23 @@ class AddIndexPlugin(BasePlugin):
             tmp_lines_values = self._ascent(tmp_lines_values, [0], 0, [], 1, self._order)
             # tmp_lines_values = self._ascent(tmp_lines_values, [0], 1, [], 0, 0)
         
-        # Set chapter number
-        if config.get('increment_pages', None):
+        if self.config.get('increment_pages', False):
+            # Throw error if there is more than one heading at level 1
+            h1_lines = [x for x in heading_lines.values() if x.startswith("# ")]
+            if len(h1_lines) > 1:
+                raise AssertionError("""Page %s contains more than one level 1 heading:\n\n%s
+                                     Consider setting 'increment_pages' to False""" % 
+                                (page.file.src_path, "\n".join(h1_lines)))
+            
+            # Set chapter number
             # because lists start at 0 and not 1
-            chapter_number = self._enumerate_pages.index(page.file.src_path) + 1
+            chapter_number = self.pages.index(page.file.src_path) + 1
             tmp_lines_values = [
                 md.update_heading_chapter(l, chapter_number)
                 for l in tmp_lines_values
             ]
         
+        # Add heading numbers to markdown
         n = 0
         for key in heading_lines.keys():
             lines[key] = tmp_lines_values[n]
