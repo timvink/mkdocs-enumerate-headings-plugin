@@ -5,7 +5,7 @@ from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 
 
-class AddIndexPlugin(BasePlugin):
+class AddNumberPlugin(BasePlugin):
     config_scheme = (
         ('strict_mode', config_options.Type(bool, default=False)),
         ('excludes', config_options.Type(list, default=[])),
