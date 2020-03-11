@@ -1,79 +1,134 @@
 # coding=utf-8
 import os
+import logging
 
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
-
+from .utils import flatten
+from . import markdown as md
 
 class AddNumberPlugin(BasePlugin):
     config_scheme = (
         ('strict_mode', config_options.Type(bool, default=False)),
+        ('increment_pages', config_options.Type(bool, default=True)),
         ('excludes', config_options.Type(list, default=[])),
         ('includes', config_options.Type(list, default=[])),
         ('order', config_options.Type(int, default=1))
     )
+    
+    def _check_config_params(self):
+        set_parameters = self.config.keys()
+        allowed_parameters = dict(self.config_scheme).keys()
+        if set_parameters != allowed_parameters:
+            unknown_parameters = [x for x in set_parameters if x not in allowed_parameters]
+            raise AssertionError("Unknown parameter(s) set: %s" % ", ".join(unknown_parameters))
 
-    def __init__(self):
-        self.enabled = True
-        self._has_load_conf = False
-        self._oder = None
+    def on_files(self, files, config):
+        """
+        The files event is called after the files collection is populated from the docs_dir. 
+        Use this event to add, remove, or alter files in the collection.
+        
+        See https://www.mkdocs.org/user-guide/plugins/#on_files
+        
+        Args:
+            files (list): list with pages (class Page)
+            config (dict): global configuration object
+            
+        Returns:
+            files (list): list with pages (class Page)
+        """
+       
+        self._check_config_params()
+        
+        # Use navigation if set, 
+        # (see https://www.mkdocs.org/user-guide/configuration/#nav)
+        # only these pages will be displayed. 
+        nav = config.get('nav', None)
+        if nav:
+            pages = flatten(nav)
+        # Otherwise, take all source markdown pages
+        else:
+            pages = [
+                page.src_path for page in files if page.is_documentation_page()
+            ]
+    
+        # Record excluded files from selection by user
+        self._excludes = self.config['excludes']
+        self._exclude_files = [os.path.normpath(file1) for file1 in self._excludes if not file1.endswith('\\')
+                                and not file1.endswith('/')]
+        self._exclude_dirs = [os.path.normpath(dir1) for dir1 in self._excludes if dir1.endswith('\\')
+                                or dir1.endswith('/')]
 
-    def _init(self):
-        if not self._has_load_conf:
-            self._excludes = self.config['excludes']
-            self._exclude_files = [os.path.normpath(file1) for file1 in self._excludes if not file1.endswith('\\')
-                                   and not file1.endswith('/')]
-            self._exclude_dirs = [os.path.normpath(dir1) for dir1 in self._excludes if dir1.endswith('\\')
-                                  or dir1.endswith('/')]
+        self._includes = self.config['includes']
+        self._include_files = [os.path.normpath(file1) for file1 in self._includes if not file1.endswith('\\')
+                                and not file1.endswith('/')]
+        self._include_dirs = [os.path.normpath(dir1) for dir1 in self._includes if dir1.endswith('\\')
+                                or dir1.endswith('/')]
 
-            self._includes = self.config['includes']
-            self._include_files = [os.path.normpath(file1) for file1 in self._includes if not file1.endswith('\\')
-                                   and not file1.endswith('/')]
-            self._include_dirs = [os.path.normpath(dir1) for dir1 in self._includes if dir1.endswith('\\')
-                                  or dir1.endswith('/')]
-
-            self._order = self.config['order'] - 1
-            # with open('excludes.log', 'a') as f:
-            #     f.write("_excludes: {:s}\n_exclude_files: {:s}\n_exclude_files: {:s}\n\n".format(
-            #         self._excludes, self._exclude_files, self._exclude_files))
-            self._has_load_conf = True
-
+        self._order = self.config['order'] - 1
+        
+        # Remove pages excluded from selection by user
+        pages_to_remove = [page.file.src_path for page in files if self._is_exclude(page) and not self._is_include(page)]
+        self.pages = [page for page in pages if page not in pages_to_remove]
+        
+        return files
+        
     def on_page_markdown(self, markdown, page, config, files):
-        self._init()
-
-        if self._is_exclude(page) and not self._is_include(page):
+        """
+        The page_markdown event is called after the page's markdown is loaded 
+        from file and can be used to alter the Markdown source text. 
+        The meta- data has been stripped off and is available as page.meta 
+        at this point.
+        
+        See:
+        https://www.mkdocs.org/user-guide/plugins/#on_page_markdown
+        
+        Args:
+            markdown (str): Markdown source text of page as string
+            page (Page): mkdocs.nav.Page instance
+            config (dict): global configuration object
+            files (list): global files collection
+        
+        Returns:
+            markdown (str): Markdown source text of page as string
+        """
+        
+        if page.file.src_path not in self.pages:
             return markdown
 
         lines = markdown.split('\n')
-        line_length = len(lines)
-        tmp_lines = {}
-        n = 0
-        is_block = False
-
-        while n < line_length:
-            if lines[n].startswith('```'):
-                is_block = not is_block
-
-            if not is_block and lines[n].startswith('#'):
-                tmp_lines[n] = lines[n]
-            n += 1
-
-        if len(tmp_lines) <= self._order:
+        heading_lines = md.headings(lines)
+        
+        if len(heading_lines) <= self._order:
             return markdown
 
-        keys = sorted(tmp_lines.keys())
-        tmp_lines_values = []
-        for key in keys:
-            tmp_lines_values.append(tmp_lines[key])
+        tmp_lines_values = list(heading_lines.values())
 
         if self.config['strict_mode']:
             tmp_lines_values, _ = self._searchN(tmp_lines_values, 1, self._order, 1, [], self._searchN)
         else:
             tmp_lines_values = self._ascent(tmp_lines_values, [0], 0, [], 1, self._order)
             # tmp_lines_values = self._ascent(tmp_lines_values, [0], 1, [], 0, 0)
-
+        
+        if self.config.get('increment_pages', False):
+            # Throw warning if there is more than one heading at level 1
+            h1_lines = [x for x in heading_lines.values() if x.startswith("# ")]
+            if len(h1_lines) > 1:
+                raise logging.warning("""Page %s contains more than one level 1 heading:\n\n%s
+                                     Consider setting 'increment_pages' to False""" % 
+                                (page.file.src_path, "\n".join(h1_lines)))
+            
+            # Set chapter number
+            # because lists start at 0 and not 1
+            chapter_number = self.pages.index(page.file.src_path) + 1
+            tmp_lines_values = [
+                md.update_heading_chapter(l, chapter_number)
+                for l in tmp_lines_values
+            ]
+        
+        # Add heading numbers to markdown
         n = 0
-        for key in keys:
+        for key in heading_lines.keys():
             lines[key] = tmp_lines_values[n]
             n += 1
 
@@ -83,7 +138,8 @@ class AddNumberPlugin(BasePlugin):
 
         if startrow == len(tmp_lines):
             return tmp_lines
-        nums_head = self._nums_head(tmp_lines[startrow])
+        
+        nums_head = md.heading_depth(tmp_lines[startrow])
         parent_nums = parent_nums_head[len(parent_nums_head) - 1]
 
         if nums_head < parent_nums:
@@ -111,13 +167,6 @@ class AddNumberPlugin(BasePlugin):
         re_str = (substr + "%d. " % nextnum) if (prenum_str == '') else (substr + "%s%d " % (prenum_str, nextnum))
         tmp_line = tmp_line.replace(substr, re_str)
         return tmp_line
-
-    def _nums_head(self, tmp_string):
-        n = 0
-        while tmp_string[n:n + 1] == '#':
-            n += 1
-
-        return n
 
     def _searchN(self, tmp_lines, num, start_row, level, args, func):
         while True:

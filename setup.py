@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     name='mkdocs-add-number-plugin',
     version='1.1.0',
-    description='A MkDocs plugin to add number to titles of page.',
+    description='MkDocs Plugin to automatically number the headings (h1-h6) in each markdown page.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     keywords='mkdocs index add-number plugin',
@@ -25,7 +25,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7'

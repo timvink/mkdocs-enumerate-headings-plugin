@@ -1,0 +1,12 @@
+site_name: test plugin
+use_directory_urls: false
+
+nav:
+    - Home: 'index.md'
+    - Page One: 'first_page.md'
+    - Page Two: 'second_page.md'
+    - Page Three: 'a_third_page.md'
+
+plugins:
+    - search
+    - mkdocs-add-number-plugin
