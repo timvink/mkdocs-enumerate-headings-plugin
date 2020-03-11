@@ -6,7 +6,7 @@ from mkdocs.plugins import BasePlugin
 from .utils import flatten
 from . import markdown as md
 
-class AddIndexPlugin(BasePlugin):
+class AddNumberPlugin(BasePlugin):
     config_scheme = (
         ('strict_mode', config_options.Type(bool, default=False)),
         ('increment_pages', config_options.Type(bool, default=True)),

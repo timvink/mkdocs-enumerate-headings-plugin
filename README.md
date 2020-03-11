@@ -21,7 +21,7 @@ Next, add the following lines to your `mkdocs.yml`:
 ```yml
 plugins:
   - search
-  - mkdocs-add-number-plugin
+  - add-number
 ```
 
 > If you have no `plugins` entry in your config file yet, you'll likely also want to add the `search` plugin. MkDocs enables it by default if there is no `plugins` entry set.
@@ -33,7 +33,7 @@ Example of multiple options set in the `mkdocs.yml` file:
 ```yml
 plugins:
     - search
-    - mkdocs-add-number-plugin:
+    - add-number:
         increment_pages: True
         strict_mode: False
         order: 1
@@ -76,7 +76,7 @@ To exclude rsync file, add the excludes option as follows:
 ```yaml
 plugins:
      - search
-     - mkdocs-add-number-plugin:
+     - add-number:
          excludes:
          	- command/rsync
 ```
@@ -86,7 +86,7 @@ If you want to exclude the command folder, add the excludes option as follows:
 ```yaml
 plugins:
      - search
-     - mkdocs-add-number-plugin:
+     - add-number:
          excludes:
          	- command/
 ```
@@ -171,7 +171,7 @@ $ tree .
 ```yaml
 plugins: 
     - search
-    - mkdocs-add-number-plugin:
+    - add-number:
         excludes: 
         	- command\rsync
 ```
@@ -181,7 +181,7 @@ plugins:
 ```yaml
 plugins: 
     - search
-    - mkdocs-add-number-plugin:
+    - add-number:
         excludes: 
         	- command\
 ```
@@ -236,7 +236,7 @@ pip install mkdocs-add-number-plugin
 ```yaml
 plugins: 
     - search
-    - mkdocs-add-number-plugin:
+    - add-number:
         strict_mode: False
         order: 1
         excludes: 
