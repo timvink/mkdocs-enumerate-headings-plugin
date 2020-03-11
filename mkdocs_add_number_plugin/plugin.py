@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import logging
 
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
@@ -110,10 +111,10 @@ class AddNumberPlugin(BasePlugin):
             # tmp_lines_values = self._ascent(tmp_lines_values, [0], 1, [], 0, 0)
         
         if self.config.get('increment_pages', False):
-            # Throw error if there is more than one heading at level 1
+            # Throw warning if there is more than one heading at level 1
             h1_lines = [x for x in heading_lines.values() if x.startswith("# ")]
             if len(h1_lines) > 1:
-                raise AssertionError("""Page %s contains more than one level 1 heading:\n\n%s
+                raise logging.warning("""Page %s contains more than one level 1 heading:\n\n%s
                                      Consider setting 'increment_pages' to False""" % 
                                 (page.file.src_path, "\n".join(h1_lines)))
             
