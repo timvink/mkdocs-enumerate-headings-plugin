@@ -9,4 +9,4 @@ nav:
 
 plugins:
     - search
-    - mkdocs-add-number-plugin
+    - enumerate-headings

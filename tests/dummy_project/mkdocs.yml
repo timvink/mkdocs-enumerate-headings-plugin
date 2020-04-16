@@ -3,5 +3,5 @@ use_directory_urls: false
 
 plugins:
     - search
-    - mkdocs-add-number-plugin:
+    - enumerate-headings:
         strict_mode: True

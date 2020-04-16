@@ -137,7 +137,7 @@ def test_build_with_nav(tmp_path):
 def test_build_with_excludes(tmp_path):
     """
     currently not working, 
-    see https://github.com/ignorantshr/mkdocs-add-number-plugin/issues/8
+    see https://github.com/ignorantshr/mkdocs-enumerate-headings-plugin/issues/8
     
     """
 

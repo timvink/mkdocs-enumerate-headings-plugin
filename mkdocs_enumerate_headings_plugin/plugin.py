@@ -8,7 +8,7 @@ from .utils import flatten
 from . import markdown as md
 
 
-class AddNumberPlugin(BasePlugin):
+class EnumerateHeadingsPlugin(BasePlugin):
     config_scheme = (
         ("strict_mode", config_options.Type(bool, default=False)),
         ("increment_pages", config_options.Type(bool, default=True)),

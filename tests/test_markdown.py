@@ -1,4 +1,4 @@
-from mkdocs_add_number_plugin import markdown
+from mkdocs_enumerate_headings_plugin import markdown
 
 page1 = """
 # Example page

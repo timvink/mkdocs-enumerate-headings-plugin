@@ -1,4 +1,4 @@
-from mkdocs_add_number_plugin.utils import flatten
+from mkdocs_enumerate_headings_plugin.utils import flatten
 
 
 def test_flatten():
