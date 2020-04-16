@@ -1,4 +1,3 @@
-
 def flatten(nav):
     """
     Flattens mkdocs navigation to list of markdown files 
