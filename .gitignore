@@ -516,3 +516,16 @@ healthchecksdb
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 # End of https://www.gitignore.io/api/r,macos,python,pycharm,windows,visualstudio,jupyternotebooks
+.vscode/
+# Created by https://www.gitignore.io/api/r,macos,python,pycharm,windows,visualstudio,visualstudiocode,jupyternotebooks
+# Edit at https://www.gitignore.io/?templates=r,macos,python,pycharm,windows,visualstudio,visualstudiocode,jupyternotebooks
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+# End of https://www.gitignore.io/api/r,macos,python,pycharm,windows,visualstudio,visualstudiocode,jupyternotebooks
