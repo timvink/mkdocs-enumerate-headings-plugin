@@ -45,16 +45,16 @@ def setup_clean_mkdocs_folder(mkdocs_yml_path, output_path):
     testproject_path = output_path / "testproject"
 
     # Create empty 'testproject' folder
-    if os.path.exists(testproject_path):
+    if os.path.exists(str(testproject_path)):
         logging.warning(
             """This command does not work on windows. 
         Refactor your test to use setup_clean_mkdocs_folder() only once"""
         )
-        shutil.rmtree(testproject_path)
+        shutil.rmtree(str(testproject_path))
 
     # Copy correct mkdocs.yml file and our test 'docs/'
-    shutil.copytree("tests/dummy_project/docs", testproject_path / "docs")
-    shutil.copyfile(mkdocs_yml_path, testproject_path / "mkdocs.yml")
+    shutil.copytree("tests/dummy_project/docs", str(testproject_path / "docs"))
+    shutil.copyfile(mkdocs_yml_path, str(testproject_path / "mkdocs.yml"))
 
     return testproject_path
 
@@ -71,7 +71,7 @@ def build_docs_setup(testproject_path):
     """
 
     cwd = os.getcwd()
-    os.chdir(testproject_path)
+    os.chdir(str(testproject_path))
 
     try:
         run = CliRunner().invoke(build_command)
@@ -98,7 +98,7 @@ def test_basic_build(tmp_path):
     assert result.exit_code == 0, "'mkdocs build' command failed"
 
     index_file = tmp_proj / "site/index.html"
-    assert index_file.exists(), f"{index_file} does not exist"
+    assert index_file.exists(), "%s does not exist" % index_file
 
     # index.html is always first page, so should have chapter 1
     contents = index_file.read_text()
@@ -125,7 +125,7 @@ def test_build_with_nav(tmp_path):
     assert result.exit_code == 0, "'mkdocs build' command failed"
 
     index_file = tmp_proj / "site/index.html"
-    assert index_file.exists(), f"{index_file} does not exist"
+    assert index_file.exists(), "%s does not exist" % index_file
 
     # index.html is always first page, so should have chapter 1
     contents = index_file.read_text()

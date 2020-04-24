@@ -37,7 +37,6 @@ class EnumerateHeadingsPlugin(BasePlugin):
         # Determine sequential chapter numbers
         page_chapter_numbers = chapter_numbers(pages_n_chapters)
         self.page_chapter_number = dict(zip(pages, page_chapter_numbers))
-        print(self.page_chapter_number)
 
         return nav
 
