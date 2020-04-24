@@ -29,25 +29,25 @@ def test_section_number_string():
 
     line.section_numbering = [1, 0, 0, 0, 0, 0]
     assert line.section_number_string() == "1."
-    assert str(line) == "# 1. dummy test"
+    assert line.enumerate() == "# 1. dummy test"
 
     line.section_numbering = [2, 1, 0, 0, 0, 0]
     assert line.section_number_string() == "2.1"
-    assert str(line) == "# 2.1 dummy test"
+    assert line.enumerate() == "# 2.1 dummy test"
 
     line.section_numbering = [2, 0, 1, 0, 0, 0]
     assert line.section_number_string() == "2.0.1"
-    assert str(line) == "# 2.0.1 dummy test"
+    assert line.enumerate() == "# 2.0.1 dummy test"
 
     line.section_numbering = [0, 1, 0, 0, 0, 0]
     assert line.section_number_string() == "0.1"
-    assert str(line) == "# 0.1 dummy test"
+    assert line.enumerate() == "# 0.1 dummy test"
 
 
 def test_reference_error1():
     line = Line("# dummy test")
     with pytest.raises(ReferenceError):
-        str(line)
+        line.enumerate()
 
 
 def test_reference_error2():

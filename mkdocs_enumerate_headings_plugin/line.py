@@ -7,7 +7,7 @@ class Line(str):
         self.is_heading = None
         self.section_numbering = [0, 0, 0, 0, 0, 0]
 
-    def __str__(self, add_span_element=True):
+    def enumerate(self, add_span_element=False):
 
         if self.is_heading is None:
             raise ReferenceError(
@@ -19,9 +19,18 @@ class Line(str):
 
         pattern = re.compile(r"(\#+) (.*)")
         matches = pattern.match(self.line)
-        return "%s %s %s" % (
+
+        span_start = ""
+        span_end = ""
+        if add_span_element:
+            span_start = "<span class='enumerate-heading-plugin'>"
+            span_end = "</span>"
+            
+        return "%s %s%s%s %s" % (
             matches.group(1),
+            span_start,
             self.section_number_string(),
+            span_end,
             matches.group(2),
         )
 

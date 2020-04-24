@@ -24,7 +24,7 @@ class MarkdownPage:
         Returns:
             List[str]: lines of markdown page
         """
-        return [str(l) for l in self.lines]
+        return [l.enumerate(add_span_element) for l in self.lines]
 
     def set_page_chapter(self, chapter):
         [l.set_chapter(chapter) for l in self.lines]
