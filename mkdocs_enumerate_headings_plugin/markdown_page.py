@@ -14,8 +14,27 @@ class MarkdownPage:
         self._find_headings()
         self._find_section_numbering()
 
-    def enumerate_headings(self):
+    def enumerate_headings(self, add_span_element=True):
+        """
+        Adds section numbering to all headings in all pages.
+
+        Args:
+            add_span_element (bool): Wrap numbering with <span class='enumerate-heading-plugin'></span>. Defaults to True.
+
+        Returns:
+            List[str]: lines of markdown page
+        """
         return [str(l) for l in self.lines]
+
+    def set_page_chapter(self, chapter):
+        [l.set_chapter(chapter) for l in self.lines]
+
+    def get_max_chapter(self):
+        return max([l.get_section_number(1) for l in self.lines])
+
+    def first_heading_is_level1(self):
+        headings = [l for l in self.lines if l.get_is_heading()]
+        return headings[0].get_section_number(1) == 1
 
     def _find_headings(self):
         """

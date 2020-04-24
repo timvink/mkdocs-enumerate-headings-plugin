@@ -3,5 +3,4 @@ use_directory_urls: false
 
 plugins:
     - search
-    - enumerate-headings:
-        strict_mode: True
+    - enumerate-headings

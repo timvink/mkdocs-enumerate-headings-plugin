@@ -1,4 +1,4 @@
-# Test page
+# Homepage
 
 Welcome to the test website
 
@@ -10,12 +10,13 @@ more content
 
 ## Some section
 
-bla bla
-bla
+more content
+more content
+more content
 
 ### sub heading three deep
 
-bla
+more content
 
 ### another sub heading
 

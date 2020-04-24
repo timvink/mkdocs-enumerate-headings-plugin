@@ -7,7 +7,8 @@ class Line(str):
         self.is_heading = None
         self.section_numbering = [0, 0, 0, 0, 0, 0]
 
-    def __str__(self):
+    def __str__(self, add_span_element=True):
+
         if self.is_heading is None:
             raise ReferenceError(
                 "is_heading attribute has not been determined yet. Run Page._find_headings() first."
@@ -29,6 +30,17 @@ class Line(str):
 
     def set_section_number(self, section_number: int, depth: int):
         self.section_numbering[depth - 1] = section_number
+
+    def set_chapter(self, chapter):
+        # Note that line chapter numbers always start at either 0 or 1
+        # And then increment.
+        line_chapter = self.section_numbering[0]
+        if line_chapter == 0:
+            new_chapter = chapter
+        else:
+            new_chapter = line_chapter - 1 + chapter
+
+        self.section_numbering[0] = new_chapter
 
     def get_is_heading(self):
         if self.is_heading is None:

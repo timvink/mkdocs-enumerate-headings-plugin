@@ -4,93 +4,42 @@ import logging
 
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
-from .utils import flatten
-from . import markdown as md
+from .markdown_page import MarkdownPage
+from .utils import flatten, read_md, chapter_numbers
 
 
 class EnumerateHeadingsPlugin(BasePlugin):
-    config_scheme = (
-        ("strict_mode", config_options.Type(bool, default=False)),
-        ("increment_pages", config_options.Type(bool, default=True)),
-        ("excludes", config_options.Type(list, default=[])),
-        ("includes", config_options.Type(list, default=[])),
-        ("order", config_options.Type(int, default=1)),
-    )
+    config_scheme = (("strict", config_options.Type(bool, default=True)),)
 
-    def _check_config_params(self):
-        set_parameters = self.config.keys()
-        allowed_parameters = dict(self.config_scheme).keys()
-        if set_parameters != allowed_parameters:
-            unknown_parameters = [
-                x for x in set_parameters if x not in allowed_parameters
-            ]
-            raise AssertionError(
-                "Unknown parameter(s) set: %s" % ", ".join(unknown_parameters)
-            )
+    def __init__(self):
+        self.counter_page_chapter = 0
+        self.pages = list()
 
-    def on_files(self, files, config):
-        """
-        The files event is called after the files collection is populated from the docs_dir. 
-        Use this event to add, remove, or alter files in the collection.
-        
-        See https://www.mkdocs.org/user-guide/plugins/#on_files
-        
-        Args:
-            files (list): list with pages (class Page)
-            config (dict): global configuration object
-            
-        Returns:
-            files (list): list with pages (class Page)
-        """
+    def on_nav(self, nav, config, files):
 
-        self._check_config_params()
+        # TODO
+        # check that this plugin is defined *after* plugins that also use on_nav(), like monorepo and awesomepages
 
-        # Use navigation if set,
-        # (see https://www.mkdocs.org/user-guide/configuration/#nav)
-        # only these pages will be displayed.
-        nav = config.get("nav", None)
-        if nav:
-            pages = flatten(nav)
-        # Otherwise, take all source markdown pages
+        # Find ordering of pages displayed in site
+        if config.get("nav"):
+            pages = flatten(config["nav"])
         else:
-            pages = [page.src_path for page in files if page.is_documentation_page()]
+            pages = [f.src_path for f in files.documentation_pages()]
 
-        # Record excluded files from selection by user
-        self._excludes = self.config["excludes"]
-        self._exclude_files = [
-            os.path.normpath(file1)
-            for file1 in self._excludes
-            if not file1.endswith("\\") and not file1.endswith("/")
-        ]
-        self._exclude_dirs = [
-            os.path.normpath(dir1)
-            for dir1 in self._excludes
-            if dir1.endswith("\\") or dir1.endswith("/")
-        ]
+        # Find number of chapters per page
+        pages_n_chapters = []
+        for page in pages:
+            abs_path = os.path.join(config["docs_dir"], page)
+            markdown_page = MarkdownPage(read_md(abs_path))
+            n_chapters = markdown_page.get_max_chapter()
+            pages_n_chapters.append(n_chapters)
 
-        self._includes = self.config["includes"]
-        self._include_files = [
-            os.path.normpath(file1)
-            for file1 in self._includes
-            if not file1.endswith("\\") and not file1.endswith("/")
-        ]
-        self._include_dirs = [
-            os.path.normpath(dir1)
-            for dir1 in self._includes
-            if dir1.endswith("\\") or dir1.endswith("/")
-        ]
+        # Determine sequential chapter numbers
+        page_chapter_numbers = chapter_numbers(pages_n_chapters)
+        self.page_chapter_number = dict(zip(pages, page_chapter_numbers))
+        print(self.page_chapter_number)
 
-        self._order = self.config["order"] - 1
-
-        # Remove pages excluded from selection by user
-        pages_to_remove = [
-            page.file.src_path
-            for page in files
-            if self._is_exclude(page) and not self._is_include(page)
-        ]
-        self.pages = [page for page in pages if page not in pages_to_remove]
-
-        return files
+        return nav
 
     def on_page_markdown(self, markdown, page, config, files):
         """
@@ -112,171 +61,25 @@ class EnumerateHeadingsPlugin(BasePlugin):
             markdown (str): Markdown source text of page as string
         """
 
-        if page.file.src_path not in self.pages:
+        if not page.file.src_path in self.page_chapter_number.keys():
             return markdown
 
         lines = markdown.split("\n")
-        heading_lines = md.headings(lines)
+        md_page = MarkdownPage(lines)
 
-        if len(heading_lines) <= self._order:
-            return markdown
-
-        tmp_lines_values = list(heading_lines.values())
-
-        if self.config["strict_mode"]:
-            tmp_lines_values, _ = self._searchN(
-                tmp_lines_values, 1, self._order, 1, [], self._searchN
+        if not md_page.first_heading_is_level1():
+            msg = (
+                "[enumerate_headings_plugin]: The first heading on '%s' is should be level 1. Use '# <your title>'"
+                % page.file.src_path
             )
-        else:
-            tmp_lines_values = self._ascent(
-                tmp_lines_values, [0], 0, [], 1, self._order
-            )
-            # tmp_lines_values = self._ascent(tmp_lines_values, [0], 1, [], 0, 0)
+            if self.config["strict"]:
+                raise AssertionError(msg)
+            else:
+                logging.warning(msg)
 
-        if self.config.get("increment_pages", False):
-            # Throw warning if there is more than one heading at level 1
-            h1_lines = [x for x in heading_lines.values() if x.startswith("# ")]
-            if len(h1_lines) > 1:
-                raise logging.warning(
-                    """Page %s contains more than one level 1 heading:\n\n%s
-                                     Consider setting 'increment_pages' to False"""
-                    % (page.file.src_path, "\n".join(h1_lines))
-                )
+        # Set page chapter number
+        page_chapter = self.page_chapter_number[page.file.src_path]
+        md_page.set_page_chapter(page_chapter)
 
-            # Set chapter number
-            # because lists start at 0 and not 1
-            chapter_number = self.pages.index(page.file.src_path) + 1
-            tmp_lines_values = [
-                md.update_heading_chapter(l, chapter_number) for l in tmp_lines_values
-            ]
-
-        # Add heading numbers to markdown
-        n = 0
-        for key in heading_lines.keys():
-            lines[key] = tmp_lines_values[n]
-            n += 1
-
+        lines = md_page.enumerate_headings()
         return "\n".join(lines)
-
-    def _ascent(self, tmp_lines, parent_nums_head, level, args, num, startrow):
-
-        if startrow == len(tmp_lines):
-            return tmp_lines
-
-        nums_head = md.heading_depth(tmp_lines[startrow])
-        parent_nums = parent_nums_head[len(parent_nums_head) - 1]
-
-        if nums_head < parent_nums:
-            if level != 1:
-                num = args.pop()
-            level -= 1
-            parent_nums_head.pop()
-            return self._ascent(tmp_lines, parent_nums_head, level, args, num, startrow)
-
-        if nums_head == parent_nums:
-            tmp_lines[startrow] = self._replace_line(
-                tmp_lines[startrow],
-                "#" * nums_head + " ",
-                ".".join(("%d." * (level - 1)).split()) % tuple(args),
-                num + 1,
-            )
-            return self._ascent(
-                tmp_lines, parent_nums_head, level, args, num + 1, startrow + 1
-            )
-        else:
-            level += 1
-            # len(args) == level - 1
-            if level != 1:
-                args.append(num)
-            parent_nums_head.append(nums_head)
-            tmp_lines[startrow] = self._replace_line(
-                tmp_lines[startrow],
-                "#" * nums_head + " ",
-                ".".join(("%d." * (level - 1)).split()) % tuple(args),
-                1,
-            )
-            return self._ascent(
-                tmp_lines, parent_nums_head, level, args, 1, startrow + 1
-            )
-
-    def _replace_line(self, tmp_line, substr, prenum_str, nextnum):
-        re_str = (
-            (substr + "%d. " % nextnum)
-            if (prenum_str == "")
-            else (substr + "%s%d " % (prenum_str, nextnum))
-        )
-        tmp_line = tmp_line.replace(substr, re_str)
-        return tmp_line
-
-    def _searchN(self, tmp_lines, num, start_row, level, args, func):
-        while True:
-            tmp_lines, start_row, re = self._replace(
-                tmp_lines,
-                "#" * level + " ",
-                ".".join(("%d." * (level - 1)).split()) % tuple(args),
-                num,
-                start_row,
-            )
-            if not re:
-                break
-
-            next_num = 1
-            if level != 6:
-                args.append(num)
-                re_lines, start_row = func(
-                    tmp_lines, next_num, start_row, level + 1, args, func
-                )
-                args.pop()
-
-            num += 1
-
-        return tmp_lines, start_row
-
-    def _replace(self, tmp_lines, substr, prenum_str, nextnum, start_row):
-        if start_row == len(tmp_lines) or not tmp_lines[start_row].startswith(substr):
-            return tmp_lines, start_row, False
-
-        re_str = (
-            (substr + "%d. " % nextnum)
-            if (prenum_str == "")
-            else (substr + "%s%d " % (prenum_str, nextnum))
-        )
-        tmp_lines[start_row] = tmp_lines[start_row].replace(substr, re_str)
-        return tmp_lines, start_row + 1, True
-
-    def _is_exclude(self, page):
-        if len(self._excludes) == 0:
-            return False
-
-        url = os.path.normpath(page.url)
-
-        try:
-            if url in self._exclude_files or self._exclude_files.index("*") != -1:
-                return True
-        # no *
-        except ValueError:
-            return False
-
-        for dir1 in self._exclude_dirs:
-            if url.find(dir1) != -1:
-                return True
-
-        # with open('page.log', 'a') as f:
-        #     f.write("title: {:s}\nabs_url: {:s}\nurl: {:s}\n\n".format(
-        #             page.title.encode('utf-8'), page.abs_url.encode('utf-8'), page.url.encode('utf-8')))
-        return False
-
-    def _is_include(self, page):
-        if len(self._includes) == 0:
-            return False
-
-        url = os.path.normpath(page.url)
-
-        if url in self._include_files:
-            return True
-
-        for dir1 in self._include_dirs:
-            if url.find(dir1) != -1:
-                return True
-
-        return False

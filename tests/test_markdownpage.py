@@ -1,22 +1,20 @@
 import pytest
 from mkdocs_enumerate_headings_plugin.markdown_page import MarkdownPage
+from mkdocs_enumerate_headings_plugin.utils import read_md
 
 
 @pytest.fixture
 def simple_page():
-    p = open("tests/fixtures/pages/simple.md").readlines()
-    return [line.rstrip("\n") for line in p]
+    return read_md("tests/fixtures/pages/simple.md")
 
 
 def simple_enumerated_page():
-    p = open("tests/fixtures/pages/simple-enumerated.md").readlines()
-    return [line.rstrip("\n") for line in p]
+    return read_md("tests/fixtures/pages/simple-enumerated.md")
 
 
 @pytest.fixture
 def page_with_codeblock():
-    p = open("tests/fixtures/pages/with_codeblock.md").readlines()
-    return [line.rstrip("\n") for line in p]
+    return read_md("tests/fixtures/pages/with_codeblock.md")
 
 
 def test_page(simple_page):

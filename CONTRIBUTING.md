@@ -14,7 +14,7 @@ Make sure to install an editable version before running tests:
 ```python
 pip install -r tests/test_requirements.txt
 pip install -e .
-pytest --cov=mkdocs_enumerate-headings_plugin --cov-report term-missing tests
+pytest --cov=mkdocs_enumerate_headings_plugin --cov-report term-missing tests
 ```
 
 If it makes sense, writing tests for your PRs is always appreciated and will help get them merged.

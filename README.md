@@ -6,19 +6,7 @@
 
 # mkdocs-enumerate-headings-plugin
 
-[MkDocs](https://www.mkdocs.org/) plugin to automatically enumerate the headings (h1-h6) in each markdown page. This only affects your rendered HTML and does not affect the markdown files.
-
-# TODO
-
-- put online on github, add all the automated github actions, badges, pypi deploy, etc
-- promote on mkdocs
-- add `<span>` around headings
-- describe how to customize CSS
-- open issue with mkdocs material to support plugin
-- make sure plugin works with `mkdocs-awesome-pages`. and possibly also with `mkdocs-monorepo`; promote that on the README
-- document behaviour with some examples. Add screenshot. mention use case: writing reports.
-- implement some classes.
-- document tocdepth is 6
+[MkDocs](https://www.mkdocs.org/) plugin to automatically enumerate the headings (h1-h6) in each markdown page. 
 
 ## Setup
 
@@ -40,10 +28,28 @@ plugins:
 
 ## Usage
 
-Example of multiple options set in the `mkdocs.yml` file:
+There is only one requirement: make sure each markdown page starts with a level 1 header (`#`).
+
+Note this plugin only affects your rendered HTML and does not affect the markdown files.
+
+## Options
+
+You can customize the plugin by setting options in `mkdocs.yml`:
 
 ```yml
 plugins:
-    - search
-    - enumerate-headings
+    - enumerate-headings:
+        strict: true
 ```
+
+### `strict`
+
+Raise errors instead of warnings when:
+
+- First heading on a page is not a level one heading (single `#`)
+
+Default is `true`
+
+## Contributing
+
+Very much open to contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before putting in any work.

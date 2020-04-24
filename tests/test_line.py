@@ -42,3 +42,15 @@ def test_section_number_string():
     line.section_numbering = [0, 1, 0, 0, 0, 0]
     assert line.section_number_string() == "0.1"
     assert str(line) == "# 0.1 dummy test"
+
+
+def test_reference_error1():
+    line = Line("# dummy test")
+    with pytest.raises(ReferenceError):
+        str(line)
+
+
+def test_reference_error2():
+    line = Line("# dummy test")
+    with pytest.raises(ReferenceError):
+        line.get_is_heading()

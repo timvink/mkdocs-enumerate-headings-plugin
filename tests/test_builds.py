@@ -84,7 +84,16 @@ def build_docs_setup(testproject_path):
 
 def test_basic_build(tmp_path):
 
+    # Basic docs/ folder has bad page 'zero_h1.md'
     tmp_proj = setup_clean_mkdocs_folder("tests/dummy_project/mkdocs.yml", tmp_path)
+    result = build_docs_setup(tmp_proj)
+    assert (
+        result.exit_code == 1
+    ), "'mkdocs build' command succeeded but should have failed"
+
+    tmp_proj = setup_clean_mkdocs_folder(
+        "tests/dummy_project/mkdocs_notstrict.yml", tmp_path
+    )
     result = build_docs_setup(tmp_proj)
     assert result.exit_code == 0, "'mkdocs build' command failed"
 
@@ -93,18 +102,18 @@ def test_basic_build(tmp_path):
 
     # index.html is always first page, so should have chapter 1
     contents = index_file.read_text()
-    assert re.search(r"1. Test page", contents)
+    assert re.search(r"1. Homepage", contents)
     assert re.search(r"1.2.1 sub heading three deep", contents)
 
     # 'a_third_page.md` is first alphabetical, but second due to index.md
     third_page = tmp_proj / "site/a_third_page.html"
     contents = third_page.read_text()
-    assert re.search(r"2. A Third page", contents)
+    assert re.search(r"2. Normal", contents)
 
-    # 'second_page' is fourth in alphabetical order
-    second_page = tmp_proj / "site/second_page.html"
+    # 'zero_h1.md' is follows a page with 2 headings
+    second_page = tmp_proj / "site/zero_h1.html"
     contents = second_page.read_text()
-    assert re.search(r"4. Second Test page", contents)
+    assert re.search(r"4.0.0.1 Zero h1", contents)
 
 
 def test_build_with_nav(tmp_path):
@@ -120,47 +129,16 @@ def test_build_with_nav(tmp_path):
 
     # index.html is always first page, so should have chapter 1
     contents = index_file.read_text()
-    assert re.search(r"1. Test page", contents)
+    assert re.search(r"1. Homepage", contents)
     assert re.search(r"1.2.1 sub heading three deep", contents)
 
-    # 'a_third_page.md` is .. you guessed it.. fourth :)
+    # 'second_page' is 2+1 = third.
+    second_page = tmp_proj / "site/two_h1.html"
+    contents = second_page.read_text()
+    assert re.search(r"2. Two h1", contents)
+    assert re.search(r"3. Second level 1 heading", contents)
+
+    # 'a_third_page.md`
     third_page = tmp_proj / "site/a_third_page.html"
     contents = third_page.read_text()
-    assert re.search(r"4. A Third page", contents)
-
-    # 'second_page' is 2+1 = third.
-    second_page = tmp_proj / "site/second_page.html"
-    contents = second_page.read_text()
-    assert re.search(r"3. Second Test page", contents)
-
-
-def test_build_with_excludes(tmp_path):
-    """
-    currently not working, 
-    see https://github.com/ignorantshr/mkdocs-enumerate-headings-plugin/issues/8
-    
-    """
-
-    tmp_proj = setup_clean_mkdocs_folder(
-        "tests/dummy_project/mkdocs_with_excludes.yml", tmp_path
-    )
-    result = build_docs_setup(tmp_proj)
-    assert result.exit_code == 0, "'mkdocs build' command failed"
-
-    index_file = tmp_proj / "site/index.html"
-    assert index_file.exists(), f"{index_file} does not exist"
-
-    # DISABLED for now.
-    # second_page = tmp_proj / 'site/second_page.html'
-    # assert not second_page.exists(),  f"{second_page} should have been excluded"
-
-
-def test_build_with_strict(tmp_path):
-    tmp_proj = setup_clean_mkdocs_folder(
-        "tests/dummy_project/mkdocs_with_strict.yml", tmp_path
-    )
-    result = build_docs_setup(tmp_proj)
-    assert result.exit_code == 0, "'mkdocs build' command failed"
-
-    index_file = tmp_proj / "site/index.html"
-    assert index_file.exists(), f"{index_file} does not exist"
+    assert re.search(r"4. Normal", contents)
