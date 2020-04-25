@@ -81,7 +81,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
                 logging.warning(msg)
 
         # Set page chapter number
-        page_chapter = self.page_chapter_number[page.file.src_path]
+        page_chapter = self.page_chapter_number[src_path]
         md_page.set_page_chapter(page_chapter)
 
         lines = md_page.enumerate_headings()
