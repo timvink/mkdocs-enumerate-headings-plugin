@@ -63,7 +63,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
         if not page.file.src_path in self.page_chapter_number.keys():
             return markdown
 
-        lines = markdown.split("\n")
+        lines = markdown.splitlines()
         md_page = MarkdownPage(lines)
 
         if not md_page.first_heading_is_level1():
