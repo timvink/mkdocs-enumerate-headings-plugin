@@ -153,6 +153,7 @@ def test_compatibility_monorepo_plugin1(tmp_path):
     
     page = tmp_proj / "site/test/index.html"
     contents = page.read_text(encoding = "utf-8")
+    print(contents)
     assert re.search(r"2.</span> Hello world!", contents)
     
 def test_compatibility_monorepo_plugin2(tmp_path):
