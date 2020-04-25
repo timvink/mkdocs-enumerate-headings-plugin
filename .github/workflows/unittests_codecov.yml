@@ -26,12 +26,13 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Static code checking with pyflakes
       run: |
-        pip install pyflakes
+        pip3 install pyflakes
         pyflakes mkdocs_enumerate_headings_plugin
     - name: Run unit tests
       run: |
-        pip install -r tests/test_requirements.txt
-        pip install -e .
+        pip3 install --upgrade pip
+        pip3 install -r tests/test_requirements.txt
+        pip3 install -e .
         pytest --cov=mkdocs_enumerate_headings_plugin --cov-report=xml -vvv
     - name: Upload coverage to Codecov
       if: "contains(env.USING_COVERAGE, matrix.python-version)"
