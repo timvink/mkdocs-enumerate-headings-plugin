@@ -1,7 +1,6 @@
 # coding=utf-8
 import os
 import logging
-import platform
 
 from os import linesep
 from mkdocs.config import config_options
@@ -61,15 +60,11 @@ class EnumerateHeadingsPlugin(BasePlugin):
         Returns:
             markdown (str): Markdown source text of page as string
         """
-        # debugging windows
-        print("File: %s" % page.file.src_path)
-        print("Keys: %s" % self.page_chapter_number.keys())
-        if not page.file.src_path in self.page_chapter_number.keys():
-            if platform.system() == "Windows":
-                raise AssertionError(
-                    "Debug. File %s \n keys: %s"
-                    % (page.file.src_path, self.page_chapter_number.keys())
-                )
+        # Unify src_path between unix and windows
+        src_path = page.file.src_path.replace("\\", "/")
+
+        # Skip enumeration if page not in navigation
+        if not src_path in self.page_chapter_number.keys():
             return markdown
 
         lines = markdown.splitlines()
