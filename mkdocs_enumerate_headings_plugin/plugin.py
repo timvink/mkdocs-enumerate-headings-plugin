@@ -61,12 +61,14 @@ class EnumerateHeadingsPlugin(BasePlugin):
         Returns:
             markdown (str): Markdown source text of page as string
         """
-
+        # debugging windows
+        print("File: %s" % page.file.src_path)
+        print("Keys: %s" % self.page_chapter_number.keys())
         if not page.file.src_path in self.page_chapter_number.keys():
             if platform.system() == "Windows":
                 raise AssertionError(
-                    "Debug. File %s \n keys: %s" % page.file.src_path,
-                    self.page_chapter_number.keys(),
+                    "Debug. File %s \n keys: %s"
+                    % (page.file.src_path, self.page_chapter_number.keys())
                 )
             return markdown
 
