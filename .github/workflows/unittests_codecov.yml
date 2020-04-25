@@ -20,6 +20,24 @@ jobs:
         python-version: [3.5, 3.6, 3.7]
     steps:
     - uses: actions/checkout@master
+
+    # https://github.com/actions/virtual-environments/issues/294
+    - name: Configure path to rc.exe for Python 3.5
+    run: |
+      function Invoke-VSDevEnvironment {
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $installationPath = & $vswhere -prerelease -legacy -latest -property installationPath
+          $Command = Join-Path $installationPath "Common7\Tools\vsdevcmd.bat"
+              & "${env:COMSPEC}" /s /c "`"$Command`" -no_logo && set" | Foreach-Object {
+              if ($_ -match '^([^=]+)=(.*)') {
+                  [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
+              }
+          }
+      }
+      Invoke-VSDevEnvironment
+      Get-Command rc.exe | Format-Table -AutoSize
+    if: runner.os == 'Windows' && matrix.python-version == '3.5'
+    
     - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
