@@ -17,9 +17,21 @@ class EnumerateHeadingsPlugin(BasePlugin):
         self.pages = list()
 
     def on_nav(self, nav, config, files):
+        """
+        The nav event is called after the site navigation is created
+        and can be used to alter the site navigation.
 
-        # TODO
-        # check that this plugin is defined *after* plugins that also use on_nav(), like monorepo and awesomepages
+        See:
+        https://www.mkdocs.org/user-guide/plugins/#on_nav
+        
+        Args:
+            nav: global navigation object
+            config: global configuration object
+            files: [description]
+
+        Returns:
+            nav: global navigation object
+        """
 
         # Find ordering of pages displayed in site
         if config.get("nav"):
