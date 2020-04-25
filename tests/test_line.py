@@ -20,6 +20,8 @@ def test_heading_depth():
     Line("#### heading 4").heading_depth() == 4
     Line("##### heading 5").heading_depth() == 5
     Line("###### heading 6").heading_depth() == 6
+    Line("####### heading 7").heading_depth() == 7
+    Line("######## heading 8").heading_depth() == 8
 
 
 def test_section_number_string():

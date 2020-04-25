@@ -45,7 +45,7 @@ class MarkdownPage:
         for line in self.lines:
             if line.startswith("```"):
                 is_block = not is_block
-            if not is_block and line.startswith("#"):
+            if not is_block and line.heading_depth() > 0 and line.heading_depth() <= 6:
                 line.set_is_heading(True)
             else:
                 line.set_is_heading(False)
