@@ -2,6 +2,7 @@
 import os
 import logging
 
+from os import linesep
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from .markdown_page import MarkdownPage
@@ -81,4 +82,4 @@ class EnumerateHeadingsPlugin(BasePlugin):
         md_page.set_page_chapter(page_chapter)
 
         lines = md_page.enumerate_headings()
-        return "\n".join(lines)
+        return linesep.join(lines)

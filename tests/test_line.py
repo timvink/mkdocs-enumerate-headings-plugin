@@ -50,6 +50,19 @@ def test_section_number_string():
     assert line.enumerate() == "### 2.0.1 dummy test"
 
 
+def test_span_addition():
+
+    line = Line("## dummy test")
+    line.is_heading = True
+
+    line.section_numbering = [2, 0, 0, 0, 0, 0]
+    assert line.section_number_string() == "2."
+    assert (
+        line.enumerate(add_span_element=True)
+        == "## <span class='enumerate-heading-plugin'>2.</span> dummy test"
+    )
+
+
 def test_reference_error1():
     line = Line("# dummy test")
     with pytest.raises(ReferenceError):
