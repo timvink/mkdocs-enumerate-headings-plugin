@@ -83,22 +83,28 @@ def compare(pagename):
     page = read_md("tests/fixtures/pages/%s.md" % pagename)
     page = MarkdownPage(page)
     page_enumerated = read_md("tests/fixtures/pages/%s-enumerated.md" % pagename)
-    assert page.enumerate_headings(add_span_element = False) == page_enumerated 
+    assert page.enumerate_headings(add_span_element=False) == page_enumerated
+
 
 def test_enum_simple(simple_page):
-    compare('simple')
+    compare("simple")
+
 
 def test_enum_skipheading():
     compare("skip-heading-1")
-    
+
+
 def test_enum_multipleheading():
     compare("multiple-heading-1")
+
 
 def test_enum_codeblock():
     compare("with_codeblock")
 
+
 def test_enum_edge():
     compare("edge-cases")
-    
+
+
 def test_enum_missingh1():
-    compare('missing-heading-1')
+    compare("missing-heading-1")

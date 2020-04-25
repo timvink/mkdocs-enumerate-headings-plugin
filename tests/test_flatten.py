@@ -89,10 +89,12 @@ def test_flatten2():
         "versions/v2/changelog.md",
     ]
 
-def test_flatten3():
-    nav = [{'Home': 'index.md'}, {'Subnav': ['index.md', 'index.md']}, {'Hello': [{'Home': 'test/README.md'}]}]
 
-    assert flatten(nav) == [
-        'index.md',
-        'test/README.md'
+def test_flatten3():
+    nav = [
+        {"Home": "index.md"},
+        {"Subnav": ["index.md", "index.md"]},
+        {"Hello": [{"Home": "test/README.md"}]},
     ]
+
+    assert flatten(nav) == ["index.md", "test/README.md"]

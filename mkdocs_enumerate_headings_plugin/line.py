@@ -20,13 +20,13 @@ class Line(str):
         pattern = re.compile(r"(\#+)\s(.*)")
         matches = pattern.match(self.line)
         assert matches is not None, "Line '%s' does not match regex" % self.line
-        
+
         span_start = ""
         span_end = ""
         if add_span_element:
             span_start = "<span class='enumerate-heading-plugin'>"
             span_end = "</span>"
-            
+
         return "%s %s%s%s %s" % (
             matches.group(1),
             span_start,
