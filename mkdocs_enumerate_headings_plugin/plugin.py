@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import logging
+import platform
 
 from os import linesep
 from mkdocs.config import config_options
@@ -62,6 +63,11 @@ class EnumerateHeadingsPlugin(BasePlugin):
         """
 
         if not page.file.src_path in self.page_chapter_number.keys():
+            if platform.system() == "Windows":
+                raise AssertionError(
+                    "Debug. File %s \n keys: %s" % page.file.src_path,
+                    self.page_chapter_number.keys(),
+                )
             return markdown
 
         lines = markdown.splitlines()
