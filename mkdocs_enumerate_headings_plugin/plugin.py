@@ -17,9 +17,21 @@ class EnumerateHeadingsPlugin(BasePlugin):
         self.pages = list()
 
     def on_nav(self, nav, config, files):
+        """
+        The nav event is called after the site navigation is created
+        and can be used to alter the site navigation.
 
-        # TODO
-        # check that this plugin is defined *after* plugins that also use on_nav(), like monorepo and awesomepages
+        See:
+        https://www.mkdocs.org/user-guide/plugins/#on_nav
+        
+        Args:
+            nav: global navigation object
+            config: global configuration object
+            files: [description]
+
+        Returns:
+            nav: global navigation object
+        """
 
         # Find ordering of pages displayed in site
         if config.get("nav"):
@@ -60,8 +72,11 @@ class EnumerateHeadingsPlugin(BasePlugin):
         Returns:
             markdown (str): Markdown source text of page as string
         """
+        # Unify src_path between unix and windows
+        src_path = page.file.src_path.replace("\\", "/")
 
-        if not page.file.src_path in self.page_chapter_number.keys():
+        # Skip enumeration if page not in navigation
+        if not src_path in self.page_chapter_number.keys():
             return markdown
 
         lines = markdown.splitlines()
@@ -78,7 +93,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
                 logging.warning(msg)
 
         # Set page chapter number
-        page_chapter = self.page_chapter_number[page.file.src_path]
+        page_chapter = self.page_chapter_number[src_path]
         md_page.set_page_chapter(page_chapter)
 
         lines = md_page.enumerate_headings()
