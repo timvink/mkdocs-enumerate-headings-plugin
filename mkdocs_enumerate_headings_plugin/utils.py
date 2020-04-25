@@ -1,9 +1,13 @@
+from collections import OrderedDict
 from typing import List
 
 
 def flatten(nav):
     """
-    Flattens mkdocs navigation to list of markdown files 
+    Flattens mkdocs navigation to list of markdown files.
+    
+    Some navigations include a source page twice.
+    So also deduplicate.
     
     See tests/test_flatten.py for example
     
@@ -14,13 +18,14 @@ def flatten(nav):
         list: list of markdown pages
     """
     pages = []
-    for i in nav:
-        item = list(i.values())[0]
+    for item in nav:
+        if type(item) == dict:
+            item = list(item.values())[0]
         if type(item) == list:
             pages += flatten(item)
         else:
             pages.append(item)
-    return pages
+    return list(OrderedDict.fromkeys(pages))
 
 
 def read_md(path: str):
@@ -33,7 +38,7 @@ def read_md(path: str):
     Returns:
         List[str]: list of lines
     """
-    p = open(path).readlines()
+    p = open(path, encoding="utf-8").readlines()
     return [line.rstrip("\n") for line in p]
 
 

@@ -88,3 +88,28 @@ def test_flatten2():
         "versions/v2/reference.md",
         "versions/v2/changelog.md",
     ]
+
+def test_flatten3():
+    nav = [{'Home': 'index.md'}, {'Subnav': ['index.md', 'index.md']}, {'Hello': [{'Home': 'test/README.md'}]}]
+
+    assert flatten(nav) == [
+        'index.md',
+        'test/README.md'
+    ]
+
+def test_flatten4():
+    nav = [{'Intro': 'index.md'}, 
+           {'Authentication': 'authentication.md'}, 
+           {'API': [{'v1': [{'Reference': 'versions/v1/reference.md'}, {'Changelog': 'versions/v1/changelog.md'}]}, 
+                    {'v2': [{'Migrating to v2': 'versions/v2/migrating.md'}, {'Reference': 'versions/v2/reference.md'}, 
+                            {'Changelog': 'versions/v2/changelog.md'}]}]}]
+    
+    assert flatten(nav) == [
+        'index.md',
+        'authentication.md',
+        'versions/v1/reference.md',
+        'versions/v1/changelog.md',
+        'versions/v2/migrating.md',
+        'versions/v2/reference.md',
+        'versions/v2/changelog.md'
+    ]

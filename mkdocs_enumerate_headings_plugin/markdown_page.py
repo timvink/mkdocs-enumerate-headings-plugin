@@ -8,6 +8,7 @@ class MarkdownPage:
         """
         Args:
             lines (List[str]): Lines from a markdown file
+            page: MkDocs Page Class
         """
 
         self.lines = [Line(l) for l in lines]

@@ -53,7 +53,8 @@ def setup_clean_mkdocs_folder(mkdocs_yml_path, output_path):
         shutil.rmtree(str(testproject_path))
 
     # Copy correct mkdocs.yml file and our test 'docs/'
-    shutil.copytree("tests/dummy_project/docs", str(testproject_path / "docs"))
+    yml_dir = os.path.dirname(mkdocs_yml_path)
+    shutil.copytree(yml_dir, str(testproject_path))
     shutil.copyfile(mkdocs_yml_path, str(testproject_path / "mkdocs.yml"))
 
     return testproject_path
@@ -142,3 +143,47 @@ def test_build_with_nav(tmp_path):
     third_page = tmp_proj / "site/a_third_page.html"
     contents = third_page.read_text()
     assert re.search(r"4.</span> Normal", contents)
+
+def test_compatibility_monorepo_plugin1(tmp_path):
+    tmp_proj = setup_clean_mkdocs_folder(
+        "tests/fixtures/projects/monorepo_ok/mkdocs.yml", tmp_path
+    )
+    result = build_docs_setup(tmp_proj)
+    assert result.exit_code == 0, "'mkdocs build' command failed"
+    
+    page = tmp_proj / "site/test/index.html"
+    contents = page.read_text()
+    assert re.search(r"2.</span> Hello world!", contents)
+    
+def test_compatibility_monorepo_plugin2(tmp_path):
+    tmp_proj = setup_clean_mkdocs_folder(
+        "tests/fixtures/projects/monorepo_ok/mkdocs_enum_first.yml", tmp_path
+    )
+    result = build_docs_setup(tmp_proj)
+    assert result.exit_code == 0, "'mkdocs build' command failed"
+    
+    page = tmp_proj / "site/test/index.html"
+    contents = page.read_text()
+    assert re.search(r"2.</span> Hello world!", contents)
+    
+def test_compatibility_monorepo_plugin3(tmp_path):
+    tmp_proj = setup_clean_mkdocs_folder(
+        "tests/fixtures/projects/monorepo_sample_docs/mkdocs.yml", tmp_path
+    )
+    result = build_docs_setup(tmp_proj)
+    assert result.exit_code == 0, "'mkdocs build' command failed"
+    
+    page = tmp_proj / "site/versions/v2/changelog/index.html"
+    contents = page.read_text()
+    assert re.search(r"7.</span> Changelog", contents)
+
+def test_compatibility_monorepo_plugin3(tmp_path):
+    tmp_proj = setup_clean_mkdocs_folder(
+        "tests/fixtures/projects/monorepo_sample_docs/mkdocs_enum_first.yml", tmp_path
+    )
+    result = build_docs_setup(tmp_proj)
+    assert result.exit_code == 0, "'mkdocs build' command failed"
+    
+    page = tmp_proj / "site/versions/v2/changelog/index.html"
+    contents = page.read_text()
+    assert re.search(r"7.</span> Changelog", contents)

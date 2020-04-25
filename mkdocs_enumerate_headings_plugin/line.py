@@ -11,15 +11,16 @@ class Line(str):
 
         if self.is_heading is None:
             raise ReferenceError(
-                "is_heading attribute has not been determined yet. Run Page._find_headings() first."
+                "is_heading attribute has not been determined yet. Run MarkdownPage._find_headings() first."
             )
 
         if not self.is_heading:
             return self.line
 
-        pattern = re.compile(r"(\#+) (.*)")
+        pattern = re.compile(r"(\#+)\s(.*)")
         matches = pattern.match(self.line)
-
+        assert matches is not None, "Line '%s' does not match regex" % self.line
+        
         span_start = ""
         span_end = ""
         if add_span_element:
@@ -54,7 +55,7 @@ class Line(str):
     def get_is_heading(self):
         if self.is_heading is None:
             raise ReferenceError(
-                "is_heading attribute has not been determined yet. Run Page._find_headings() first."
+                "is_heading attribute has not been determined yet. Run MarkdownPage._find_headings() first."
             )
         return self.is_heading
 
