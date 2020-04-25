@@ -36,8 +36,8 @@ jobs:
       }
       Invoke-VSDevEnvironment
       Get-Command rc.exe | Format-Table -AutoSize
-    if: runner.os == 'Windows' && matrix.python-version == '3.5'
-    
+    if: matrix.os == 'windows-latest' && matrix.python-version == '3.5'
+
     - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
