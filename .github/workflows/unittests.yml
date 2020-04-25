@@ -18,7 +18,7 @@ jobs:
       run: |
         pip install pyflakes
         pyflakes mkdocs_enumerate_headings_plugin
-    - name: Generate coverage report
+    - name: Run unit tests
       run: |
         pip install -r tests/test_requirements.txt
         pip install -e .

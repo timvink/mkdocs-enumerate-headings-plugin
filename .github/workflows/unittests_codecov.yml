@@ -16,8 +16,8 @@ jobs:
       USING_COVERAGE: '3.7'
     strategy:
       matrix: 
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [3.5, 3.6, 3.7]
+        os: [windows-latest] #[ubuntu-latest, macos-latest, windows-latest]
+        python-version: [3.6] #[3.5, 3.6, 3.7]
     steps:
     - uses: actions/checkout@master
     - name: Setup Python ${{ matrix.python-version }}
@@ -28,11 +28,13 @@ jobs:
       run: |
         pip install pyflakes
         pyflakes mkdocs_enumerate_headings_plugin
-    - name: Generate coverage report
+    - name: Run unit tests
       run: |
         pip install -r tests/test_requirements.txt
         pip install -e .
-        pytest --cov=mkdocs_enumerate_headings_plugin --cov-report=xml
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v2
+      # pytest --cov=mkdocs_enumerate_headings_plugin --cov-report=xml
     - name: Upload coverage to Codecov
       if: "contains(env.USING_COVERAGE, matrix.python-version)"
       uses: codecov/codecov-action@v1
