@@ -102,18 +102,18 @@ def test_basic_build(tmp_path):
     assert index_file.exists(), "%s does not exist" % index_file
 
     # index.html is always first page, so should have chapter 1
-    contents = index_file.read_text()
+    contents = index_file.read_text(encoding = "utf-8")
     assert re.search(r"1.</span> Homepage", contents)
     assert re.search(r"1.2.1</span> sub heading three deep", contents)
 
     # 'a_third_page.md` is first alphabetical, but second due to index.md
     third_page = tmp_proj / "site/a_third_page.html"
-    contents = third_page.read_text()
+    contents = third_page.read_text(encoding = "utf-8")
     assert re.search(r"2.</span> Normal", contents)
 
     # 'zero_h1.md' is follows a page with 2 headings
     second_page = tmp_proj / "site/zero_h1.html"
-    contents = second_page.read_text()
+    contents = second_page.read_text(encoding = "utf-8")
     assert re.search(r"4.0.0.1</span> Zero h1", contents)
 
 
@@ -129,19 +129,19 @@ def test_build_with_nav(tmp_path):
     assert index_file.exists(), "%s does not exist" % index_file
 
     # index.html is always first page, so should have chapter 1
-    contents = index_file.read_text()
+    contents = index_file.read_text(encoding = "utf-8")
     assert re.search(r"1.</span> Homepage", contents)
     assert re.search(r"1.2.1</span> sub heading three deep", contents)
 
     # 'second_page' is 2+1 = third.
     second_page = tmp_proj / "site/two_h1.html"
-    contents = second_page.read_text()
+    contents = second_page.read_text(encoding = "utf-8")
     assert re.search(r"2.</span> Two h1", contents)
     assert re.search(r"3.</span> Second level 1 heading", contents)
 
     # 'a_third_page.md`
     third_page = tmp_proj / "site/a_third_page.html"
-    contents = third_page.read_text()
+    contents = third_page.read_text(encoding = "utf-8")
     assert re.search(r"4.</span> Normal", contents)
 
 def test_compatibility_monorepo_plugin1(tmp_path):
@@ -152,7 +152,7 @@ def test_compatibility_monorepo_plugin1(tmp_path):
     assert result.exit_code == 0, "'mkdocs build' command failed"
     
     page = tmp_proj / "site/test/index.html"
-    contents = page.read_text()
+    contents = page.read_text(encoding = "utf-8")
     assert re.search(r"2.</span> Hello world!", contents)
     
 def test_compatibility_monorepo_plugin2(tmp_path):
@@ -163,7 +163,7 @@ def test_compatibility_monorepo_plugin2(tmp_path):
     assert result.exit_code == 0, "'mkdocs build' command failed"
     
     page = tmp_proj / "site/test/index.html"
-    contents = page.read_text()
+    contents = page.read_text(encoding = "utf-8")
     assert re.search(r"2.</span> Hello world!", contents)
     
 def test_compatibility_monorepo_plugin3(tmp_path):
@@ -174,7 +174,7 @@ def test_compatibility_monorepo_plugin3(tmp_path):
     assert result.exit_code == 0, "'mkdocs build' command failed"
     
     page = tmp_proj / "site/versions/v2/changelog/index.html"
-    contents = page.read_text()
+    contents = page.read_text(encoding = "utf-8")
     assert re.search(r"7.</span> Changelog", contents)
 
 def test_compatibility_monorepo_plugin3(tmp_path):
@@ -185,5 +185,5 @@ def test_compatibility_monorepo_plugin3(tmp_path):
     assert result.exit_code == 0, "'mkdocs build' command failed"
     
     page = tmp_proj / "site/versions/v2/changelog/index.html"
-    contents = page.read_text()
+    contents = page.read_text(encoding = "utf-8")
     assert re.search(r"7.</span> Changelog", contents)
