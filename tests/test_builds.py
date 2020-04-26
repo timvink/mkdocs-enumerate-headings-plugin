@@ -191,3 +191,35 @@ def test_compatibility_monorepo_plugin4(tmp_path):
     page = tmp_proj / "site/versions/v2/changelog/index.html"
     contents = page.read_text(encoding="utf-8")
     assert re.search(r"7.</span> Changelog", contents)
+
+
+def test_compatibility_awesomepages_plugin1(tmp_path):
+    tmp_proj = setup_clean_mkdocs_folder(
+        "tests/fixtures/projects/awesome_pages/mkdocs.yml", tmp_path
+    )
+    result = build_docs_setup(tmp_proj)
+    assert result.exit_code == 0, "'mkdocs build' command failed"
+
+    page = tmp_proj / "site/index.html"
+    contents = page.read_text(encoding="utf-8")
+    assert re.search(r"5.</span> Homepage", contents)
+
+    page = tmp_proj / "site/section2/page4/index.html"
+    contents = page.read_text(encoding="utf-8")
+    assert re.search(r"1.</span> Page 4", contents)
+
+
+def test_compatibility_awesomepages_plugin2(tmp_path):
+    tmp_proj = setup_clean_mkdocs_folder(
+        "tests/fixtures/projects/awesome_pages/mkdocs_enum_first.yml", tmp_path
+    )
+    result = build_docs_setup(tmp_proj)
+    assert result.exit_code == 0, "'mkdocs build' command failed"
+
+    page = tmp_proj / "site/index.html"
+    contents = page.read_text(encoding="utf-8")
+    assert re.search(r"5.</span> Homepage", contents)
+
+    page = tmp_proj / "site/section2/page4/index.html"
+    contents = page.read_text(encoding="utf-8")
+    assert re.search(r"1.</span> Page 4", contents)

@@ -17,6 +17,27 @@ class EnumerateHeadingsPlugin(BasePlugin):
         self.counter_page_chapter = 0
         self.pages = list()
 
+    def on_config(self, config):
+
+        # Move plugin to be last in the plugins list
+        plugins = config["plugins"]
+        plugins.move_to_end("enumerate-headings")
+
+        # Move plugin's on_nav event to be last to run
+        nav_events = plugins.events["nav"]
+
+        def get_plugin_name(bound_method):
+            return type(bound_method.__self__).__name__
+
+        plugin_nav_event = [
+            e for e in nav_events if get_plugin_name(e) == "EnumerateHeadingsPlugin"
+        ][0]
+        nav_events.append(nav_events.pop(nav_events.index(plugin_nav_event)))
+        plugins.events["nav"] = nav_events
+
+        config["plugins"] = plugins
+        return config
+
     def on_nav(self, nav, config, files):
         """
         The nav event is called after the site navigation is created
