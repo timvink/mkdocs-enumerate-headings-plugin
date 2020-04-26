@@ -1,31 +1,4 @@
-from collections import OrderedDict
 from typing import List
-
-
-def flatten(nav):
-    """
-    Flattens mkdocs navigation to list of markdown files.
-    
-    Some navigations include a source page twice.
-    So also deduplicate.
-    
-    See tests/test_flatten.py for example
-    
-    Args:
-        nav (list): nested list with dicts
-    
-    Returns:
-        list: list of markdown pages
-    """
-    pages = []
-    for item in nav:
-        if type(item) == dict:
-            item = list(item.values())[0]
-        if type(item) == list:
-            pages += flatten(item)
-        else:
-            pages.append(item)
-    return list(OrderedDict.fromkeys(pages))
 
 
 def read_md(path: str):

@@ -3,10 +3,11 @@ import os
 import logging
 
 from os import linesep
+from collections import OrderedDict
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from .markdown_page import MarkdownPage
-from .utils import flatten, read_md, chapter_numbers
+from .utils import read_md, chapter_numbers
 
 
 class EnumerateHeadingsPlugin(BasePlugin):
@@ -33,11 +34,9 @@ class EnumerateHeadingsPlugin(BasePlugin):
             nav: global navigation object
         """
 
-        # Find ordering of pages displayed in site
-        if config.get("nav"):
-            pages = flatten(config["nav"])
-        else:
-            pages = [f.src_path for f in files.documentation_pages()]
+        # Find ordering of (unique) pages displayed in site
+        pages = [p.file.src_path for p in nav.pages]
+        pages = list(OrderedDict.fromkeys(pages))
 
         # Find number of chapters per page
         pages_n_chapters = []
@@ -72,11 +71,9 @@ class EnumerateHeadingsPlugin(BasePlugin):
         Returns:
             markdown (str): Markdown source text of page as string
         """
-        # Unify src_path between unix and windows
-        src_path = page.file.src_path.replace("\\", "/")
 
         # Skip enumeration if page not in navigation
-        if not src_path in self.page_chapter_number.keys():
+        if not page.file.src_path in self.page_chapter_number.keys():
             return markdown
 
         lines = markdown.splitlines()
@@ -93,7 +90,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
                 logging.warning(msg)
 
         # Set page chapter number
-        page_chapter = self.page_chapter_number[src_path]
+        page_chapter = self.page_chapter_number[page.file.src_path]
         md_page.set_page_chapter(page_chapter)
 
         lines = md_page.enumerate_headings()

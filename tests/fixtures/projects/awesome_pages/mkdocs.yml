@@ -1,0 +1,7 @@
+site_name: 'test_awesome'
+site_description: 'This site tests compatibility with mkdocs-awesome-pages-plugin'
+
+plugins:
+  - search
+  - awesome-pages
+  - enumerate-headings
