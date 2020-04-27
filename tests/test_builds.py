@@ -86,14 +86,16 @@ def build_docs_setup(testproject_path):
 def test_basic_build(tmp_path):
 
     # Basic docs/ folder has bad page 'zero_h1.md'
-    tmp_proj = setup_clean_mkdocs_folder("tests/dummy_project/mkdocs.yml", tmp_path)
+    tmp_proj = setup_clean_mkdocs_folder(
+        "tests/fixtures/projects/simple/mkdocs.yml", tmp_path
+    )
     result = build_docs_setup(tmp_proj)
     assert (
         result.exit_code == 1
     ), "'mkdocs build' command succeeded but should have failed"
 
     tmp_proj = setup_clean_mkdocs_folder(
-        "tests/dummy_project/mkdocs_notstrict.yml", tmp_path
+        "tests/fixtures/projects/simple/mkdocs_notstrict.yml", tmp_path
     )
     result = build_docs_setup(tmp_proj)
     assert result.exit_code == 0, "'mkdocs build' command failed"
@@ -120,7 +122,7 @@ def test_basic_build(tmp_path):
 def test_build_with_nav(tmp_path):
 
     tmp_proj = setup_clean_mkdocs_folder(
-        "tests/dummy_project/mkdocs_with_nav.yml", tmp_path
+        "tests/fixtures/projects/simple/mkdocs_with_nav.yml", tmp_path
     )
     result = build_docs_setup(tmp_proj)
     assert result.exit_code == 0, "'mkdocs build' command failed"
