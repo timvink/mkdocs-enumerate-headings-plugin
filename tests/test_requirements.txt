@@ -4,3 +4,4 @@ pytest
 pytest-cov
 mkdocs-material
 mkdocs-monorepo-plugin
+pymdown-extensions

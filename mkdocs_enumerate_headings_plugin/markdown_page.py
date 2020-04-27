@@ -33,6 +33,9 @@ class MarkdownPage:
     def get_max_chapter(self):
         return max([l.get_section_number(1) for l in self.lines])
 
+    def get_headings(self):
+        return [l for l in self.lines if l.get_is_heading()]
+
     def validate(self):
         headings = [l for l in self.lines if l.get_is_heading()]
 
@@ -66,7 +69,7 @@ class MarkdownPage:
         """
 
         # Only consider heading lines
-        lines = [l for l in self.lines if l.get_is_heading()]
+        lines = self.get_headings()
 
         # Look at each heading level separately
         for depth in [1, 2, 3, 4, 5, 6]:

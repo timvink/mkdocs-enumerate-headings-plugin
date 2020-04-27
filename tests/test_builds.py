@@ -223,3 +223,43 @@ def test_compatibility_awesomepages_plugin2(tmp_path):
     page = tmp_proj / "site/section2/page4/index.html"
     contents = page.read_text(encoding="utf-8")
     assert re.search(r"1.</span> Page 4", contents)
+
+
+def test_compatibility_pymarkx_snippets1(tmp_path):
+
+    tmp_proj = setup_clean_mkdocs_folder(
+        "tests/fixtures/projects/pymarkx_snippet/mkdocs.yml", tmp_path
+    )
+    result = build_docs_setup(tmp_proj)
+    assert result.exit_code == 0, "'mkdocs build' command failed"
+
+    page = tmp_proj / "site/index.html"
+    contents = page.read_text(encoding="utf-8")
+    assert re.search(r"1.</span> Homepage", contents)
+
+    page = tmp_proj / "site/snippet.html"
+    contents = page.read_text(encoding="utf-8")
+    # First check if content was inserted
+    assert re.search(r"Extra page</h1>", contents)
+    # Then check if enumeration was done
+    assert re.search(r"3.</span> Extra page", contents)
+
+
+def test_compatibility_pymarkx_snippets2(tmp_path):
+
+    tmp_proj = setup_clean_mkdocs_folder(
+        "tests/fixtures/projects/pymarkx_snippet/mkdocs_with_nav.yml", tmp_path
+    )
+    result = build_docs_setup(tmp_proj)
+    assert result.exit_code == 0, "'mkdocs build' command failed"
+
+    page = tmp_proj / "site/index.html"
+    contents = page.read_text(encoding="utf-8")
+    assert re.search(r"1.</span> Homepage", contents)
+
+    page = tmp_proj / "site/snippet.html"
+    contents = page.read_text(encoding="utf-8")
+    # First check if content was inserted
+    assert re.search(r"Extra page</h1>", contents)
+    # Then check if enumeration was done
+    assert re.search(r"2.</span> Extra page", contents)

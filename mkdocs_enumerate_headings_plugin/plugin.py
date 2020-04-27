@@ -97,8 +97,29 @@ class EnumerateHeadingsPlugin(BasePlugin):
         if not page.file.src_path in self.page_chapter_number.keys():
             return markdown
 
-        lines = markdown.splitlines()
+        lines = page.markdown.splitlines()
+
+        # Support pymarkdownx.snippets extension
+        # page.markdown and markdown is the same!
+        if config.get("markdown_extensions"):
+            if "pymdownx.snippets" in config.get("markdown_extensions"):
+
+                from markdown import Markdown
+                from pymdownx import snippets
+
+                snip_conf = config["mdx_configs"].get("pymdownx.snippets", {})
+                if not "base_path" in snip_conf:
+                    snip_conf["base_path"] = "./"
+
+                snip = snippets.SnippetPreprocessor(snip_conf, Markdown())
+                lines = snip.run(markdown.splitlines())
+
+        # print(lines)
         md_page = MarkdownPage(lines)
+
+        if page.file.src_path == "contributing.md":
+            print(f"lines: {md_page.lines}")
+            print(f"headings: {md_page.get_headings()}")
 
         if not md_page.validate():
             msg = (
