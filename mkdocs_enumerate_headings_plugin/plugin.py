@@ -100,7 +100,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
         lines = markdown.splitlines()
         md_page = MarkdownPage(lines)
 
-        if not md_page.first_heading_is_level1():
+        if not md_page.validate():
             msg = (
                 "[enumerate_headings_plugin]: The first heading on '%s' is should be level 1. Use '# <your title>'"
                 % page.file.src_path

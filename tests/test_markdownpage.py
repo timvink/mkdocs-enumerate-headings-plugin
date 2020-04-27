@@ -17,6 +17,7 @@ def page_with_codeblock():
     return read_md("tests/fixtures/pages/with_codeblock.md")
 
 
+
 def test_page(simple_page):
     page = MarkdownPage(simple_page)
     assert [int(l.get_is_heading()) for l in page.lines] == [
@@ -79,32 +80,24 @@ def test_page_headings(page_with_codeblock):
     ]
 
 
-def compare(pagename):
+# @pytest.mark.parametrize("cards,score", [('JK', 20), ('KKK', 0), ('AA', 12), ('AK', 21)])
+# def test_simple_usecase(cards, score):
+#     assert card_score(cards) == score
+
+@pytest.mark.parametrize("pagename,valid", [
+    ('simple', True), 
+    ('skip-heading-1', True),
+    ('multiple-heading-1', True),
+    ('skip-heading-1', True),
+    ('with_codeblock', True),
+    ('edge-cases', False),
+    ('missing-heading-1', False),
+    ('no-headings', True),
+    ('empty', True)
+    ])
+def test_enumeration(pagename,valid):
     page = read_md("tests/fixtures/pages/%s.md" % pagename)
     page = MarkdownPage(page)
+    assert page.validate() == valid
     page_enumerated = read_md("tests/fixtures/pages/%s-enumerated.md" % pagename)
     assert page.enumerate_headings(add_span_element=False) == page_enumerated
-
-
-def test_enum_simple(simple_page):
-    compare("simple")
-
-
-def test_enum_skipheading():
-    compare("skip-heading-1")
-
-
-def test_enum_multipleheading():
-    compare("multiple-heading-1")
-
-
-def test_enum_codeblock():
-    compare("with_codeblock")
-
-
-def test_enum_edge():
-    compare("edge-cases")
-
-
-def test_enum_missingh1():
-    compare("missing-heading-1")

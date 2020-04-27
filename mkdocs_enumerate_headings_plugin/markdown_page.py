@@ -33,9 +33,15 @@ class MarkdownPage:
     def get_max_chapter(self):
         return max([l.get_section_number(1) for l in self.lines])
 
-    def first_heading_is_level1(self):
+    def validate(self):
         headings = [l for l in self.lines if l.get_is_heading()]
-        return headings[0].get_section_number(1) == 1
+        
+        # If no headings, then also valid
+        if len(headings) == 0:
+            return True
+        else:
+            # First heading must be level 1
+            return headings[0].get_section_number(1) == 1
 
     def _find_headings(self):
         """
