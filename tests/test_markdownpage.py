@@ -96,6 +96,7 @@ def test_page_headings(page_with_codeblock):
         ("missing-heading-1", False),
         ("no-headings", True),
         ("empty", True),
+        ("only_yaml", True),
     ],
 )
 def test_enumeration(pagename, valid):

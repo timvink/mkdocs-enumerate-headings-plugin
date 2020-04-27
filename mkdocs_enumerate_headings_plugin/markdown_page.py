@@ -1,16 +1,19 @@
 from typing import List
 
 from mkdocs_enumerate_headings_plugin.line import Line
+from mkdocs.config import Config
 
 
 class MarkdownPage:
-    def __init__(self, lines: List[str]):
+    def __init__(self, lines: List[str], config=Config({})):
         """
         Args:
-            lines (List[str]): Lines from a markdown file
-            page: MkDocs Page Class
+            lines (List[str]): Lines from a markdown file. Needs to be split already in to a list (`.splitlines()`)
+            config: MkDocs Config
         """
 
+        self.config = config
+        lines = self._process_pymarkdownx_snippets(lines, config)
         self.lines = [Line(l) for l in lines]
         self._find_headings()
         self._find_section_numbering()
@@ -31,7 +34,10 @@ class MarkdownPage:
         [l.set_chapter(chapter) for l in self.lines]
 
     def get_max_chapter(self):
-        return max([l.get_section_number(1) for l in self.lines])
+        if len(self.lines) == 0:
+            return 0
+        else:
+            return max([l.get_section_number(1) for l in self.lines])
 
     def get_headings(self):
         return [l for l in self.lines if l.get_is_heading()]
@@ -45,6 +51,33 @@ class MarkdownPage:
         else:
             # First heading must be level 1
             return headings[0].get_section_number(1) == 1
+
+    @staticmethod
+    def _process_pymarkdownx_snippets(lines, config):
+        """
+        Adds support for pymarkdownx snippets.
+        
+        This is important because MkDocs renders the HTML of a markdown page 
+        after the on_nav() and on_page_markdown() events. (see mkdocs/commands/build.py _populate_page())/
+        When rendering (`page.render()`) also all markdown_extensions are run.
+        
+        This plugin needs to run the pymarkdownx.snippet extension earlier because we need 
+        access to any markdown that will be inserted. 
+        """
+        if config.get("markdown_extensions"):
+            if "pymdownx.snippets" in config.get("markdown_extensions"):
+
+                from markdown import Markdown
+                from pymdownx import snippets
+
+                snip_conf = config["mdx_configs"].get("pymdownx.snippets", {})
+                if not "base_path" in snip_conf:
+                    snip_conf["base_path"] = "./"
+
+                snip = snippets.SnippetPreprocessor(snip_conf, Markdown())
+                lines = snip.run(lines)
+
+        return lines
 
     def _find_headings(self):
         """
