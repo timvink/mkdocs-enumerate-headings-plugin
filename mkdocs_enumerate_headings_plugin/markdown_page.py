@@ -35,7 +35,7 @@ class MarkdownPage:
 
     def validate(self):
         headings = [l for l in self.lines if l.get_is_heading()]
-        
+
         # If no headings, then also valid
         if len(headings) == 0:
             return True
