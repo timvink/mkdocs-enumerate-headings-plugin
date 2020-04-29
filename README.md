@@ -10,10 +10,12 @@
 
 [MkDocs](https://www.mkdocs.org/) Plugin to enumerate the headings (h1-h6) in a MkDocs site
 
-## Features
+## Features :star2:
 
-- Automatically numbers all pages and headings
-- Compatible with plugins like [awesome-pages](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin) and [monorepo](https://github.com/spotify/mkdocs-monorepo-plugin)
+- Automatically numbers all headings and gives each page an sequential chapter number
+- Compatible with `plugins` like [awesome-pages](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin) and [monorepo](https://github.com/spotify/mkdocs-monorepo-plugin)
+- Compatible with `markdown_extensions`: [pymdownx.snippets](https://facelessuser.github.io/pymdown-extensions/extensions/snippets/)
+- Easy to customize styling through CSS
 
 ## Setup
 
@@ -64,7 +66,7 @@ plugins:
         strict: true
 ```
 
-- **`strict`** (default `true`): Raise errors instead of warnings when first heading on a page is not a level one heading (single `#`).
+- **`strict`** (default `true`): Raise errors instead of warnings when first heading on a page is not a level one heading (single `#`). Note that in `strict: false` mode the heading numbers might be incorrect between pages and before and after a level 1 heading.
 
 ## Contributing
 
