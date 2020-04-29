@@ -8,7 +8,7 @@
 
 # mkdocs-enumerate-headings-plugin
 
-[MkDocs](https://www.mkdocs.org/) Plugin to enumerate the headings (h1-h6) in a MkDocs site
+[MkDocs](https://www.mkdocs.org/) Plugin to enumerate the headings (h1-h6) across site pages
 
 ## Features :star2:
 
@@ -16,6 +16,8 @@
 - Compatible with `plugins` like [awesome-pages](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin) and [monorepo](https://github.com/spotify/mkdocs-monorepo-plugin)
 - Compatible with `markdown_extensions`: [pymdownx.snippets](https://facelessuser.github.io/pymdown-extensions/extensions/snippets/)
 - Easy to customize styling through CSS
+
+![demo screencast](demo_screencast.gif)
 
 ## Setup
 
@@ -42,7 +44,7 @@ Pages with no headings and pages with multiple h1 headings are allowed.
 
 > Note this plugin only affects your rendered HTML and does not affect the markdown files.
 
-## Styling
+### Styling
 
 All heading numbers are wrapped in `<span class='enumerate-headings-plugins'></span>` and can be customized using CSS. See MkDocs documentation for [customizing a theme](https://www.mkdocs.org/user-guide/styling-your-docs/#customizing-a-theme) on how to add an CSS to your theme.
 

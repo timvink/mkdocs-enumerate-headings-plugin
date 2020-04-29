@@ -1,0 +1,9 @@
+site_name: demo enumeration
+use_directory_urls: false
+
+theme:
+    name: material
+
+plugins:
+    - search
+    - enumerate-headings
