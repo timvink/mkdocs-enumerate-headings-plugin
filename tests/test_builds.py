@@ -83,68 +83,69 @@ def build_docs_setup(testproject_path):
         raise
 
 
-def test_basic_build(tmp_path):
-
-    # Basic docs/ folder has bad page 'zero_h1.md'
+def check_build(tmp_path, project_mkdocs, exit_code=0):
     tmp_proj = setup_clean_mkdocs_folder(
-        "tests/fixtures/projects/simple/mkdocs.yml", tmp_path
+        "tests/fixtures/projects/%s" % project_mkdocs, tmp_path
     )
     result = build_docs_setup(tmp_proj)
-    assert (
-        result.exit_code == 1
-    ), "'mkdocs build' command succeeded but should have failed"
+    assert result.exit_code == exit_code
+    return tmp_proj
 
-    tmp_proj = setup_clean_mkdocs_folder(
-        "tests/fixtures/projects/simple/mkdocs_notstrict.yml", tmp_path
-    )
-    result = build_docs_setup(tmp_proj)
-    assert result.exit_code == 0, "'mkdocs build' command failed"
 
-    index_file = tmp_proj / "site/index.html"
-    assert index_file.exists(), "%s does not exist" % index_file
+def check_text_in_page(tmp_proj, page_path, text):
+    page = tmp_proj / "site" / page_path
+    assert page.exists(), "%s does not exist" % page_path
+    contents = page.read_text(encoding="utf-8")
+    assert re.search(text, contents)
 
-    # index.html is always first page, so should have chapter 1
-    contents = index_file.read_text(encoding="utf-8")
-    assert re.search(r"1.</span> Homepage", contents)
-    assert re.search(r"1.2.1</span> sub heading three deep", contents)
+
+#### Tests ####
+
+
+def test_simple_build(tmp_path):
+    check_build(tmp_path, "simple/mkdocs.yml", exit_code=1)
+
+
+def test_simple_notstrict(tmp_path):
+
+    tmp_proj = check_build(tmp_path, "simple/mkdocs_notstrict.yml")
+
+    check_text_in_page(tmp_proj, "index.html", r"1.</span> Homepage")
+    check_text_in_page(tmp_proj, "index.html", r"1.2.1</span> sub heading three deep")
 
     # 'a_third_page.md` is first alphabetical, but second due to index.md
-    third_page = tmp_proj / "site/a_third_page.html"
-    contents = third_page.read_text(encoding="utf-8")
-    assert re.search(r"2.</span> Normal", contents)
+    check_text_in_page(tmp_proj, "a_third_page.html", r"2.</span> Normal")
 
-    # 'zero_h1.md' is follows a page with 2 headings
-    second_page = tmp_proj / "site/zero_h1.html"
-    contents = second_page.read_text(encoding="utf-8")
-    assert re.search(r"4.0.0.1</span> Zero h1", contents)
+    # A page with zero h1 but has headings should be treated as a chapter as well (in non strict mode)
+    check_text_in_page(tmp_proj, "zero_h1.html", r"5.0.0.1</span> Zero h1")
 
 
-def test_build_with_nav(tmp_path):
+def test_simple_with_nav(tmp_path):
 
-    tmp_proj = setup_clean_mkdocs_folder(
-        "tests/fixtures/projects/simple/mkdocs_with_nav.yml", tmp_path
-    )
-    result = build_docs_setup(tmp_proj)
-    assert result.exit_code == 0, "'mkdocs build' command failed"
-
-    index_file = tmp_proj / "site/index.html"
-    assert index_file.exists(), "%s does not exist" % index_file
+    tmp_proj = check_build(tmp_path, "simple/mkdocs_with_nav.yml")
 
     # index.html is always first page, so should have chapter 1
-    contents = index_file.read_text(encoding="utf-8")
-    assert re.search(r"1.</span> Homepage", contents)
-    assert re.search(r"1.2.1</span> sub heading three deep", contents)
+    check_text_in_page(tmp_proj, "index.html", r"1.</span> Homepage")
+    check_text_in_page(tmp_proj, "index.html", r"1.2.1</span> sub heading three deep")
 
     # 'second_page' is 2+1 = third.
-    second_page = tmp_proj / "site/two_h1.html"
-    contents = second_page.read_text(encoding="utf-8")
-    assert re.search(r"2.</span> Two h1", contents)
-    assert re.search(r"3.</span> Second level 1 heading", contents)
+    check_text_in_page(tmp_proj, "two_h1.html", r"2.</span> Two h1")
+    check_text_in_page(tmp_proj, "two_h1.html", r"3.</span> Second level 1 heading")
 
     # 'a_third_page.md`
-    third_page = tmp_proj / "site/a_third_page.html"
-    contents = third_page.read_text(encoding="utf-8")
-    assert re.search(r"4.</span> Normal", contents)
+    check_text_in_page(tmp_proj, "a_third_page.html", r"4.</span> Normal")
+
+
+def test_simple_no_h1_start(tmp_path):
+
+    # non-strict build
+    tmp_proj = check_build(tmp_path, "simple_no_h1_start/mkdocs.yml")
+    check_text_in_page(tmp_proj, "index.html", r"1.</span> Homepage")
+    check_text_in_page(tmp_proj, "a.html", r"2.1</span> l2 before h1")
+    check_text_in_page(tmp_proj, "a.html", r"2.1.1</span> l3 before h1")
+    check_text_in_page(tmp_proj, "a.html", r"2.</span> page a")
+    check_text_in_page(tmp_proj, "a.html", r"2.1</span> l2 after h1")
+    check_text_in_page(tmp_proj, "a.html", r"2.1.1</span> l3 after h1")
 
 
 def test_compatibility_monorepo_plugin1(tmp_path):
@@ -249,19 +250,17 @@ def test_compatibility_pymarkx_snippets1(tmp_path):
 
 def test_compatibility_pymarkx_snippets2(tmp_path):
 
-    tmp_proj = setup_clean_mkdocs_folder(
-        "tests/fixtures/projects/pymarkx_snippet/mkdocs_with_nav.yml", tmp_path
-    )
-    result = build_docs_setup(tmp_proj)
-    assert result.exit_code == 0, "'mkdocs build' command failed"
-
-    page = tmp_proj / "site/index.html"
-    contents = page.read_text(encoding="utf-8")
-    assert re.search(r"1.</span> Homepage", contents)
-
-    page = tmp_proj / "site/snippet.html"
-    contents = page.read_text(encoding="utf-8")
+    tmp_proj = check_build(tmp_path, "pymarkx_snippet/mkdocs_with_nav.yml")
+    check_text_in_page(tmp_proj, "index.html", r"1.</span> Homepage")
     # First check if content was inserted
-    assert re.search(r"Extra page</h1>", contents)
+    check_text_in_page(tmp_proj, "snippet.html", r"Extra page</h1>")
     # Then check if enumeration was done
-    assert re.search(r"2.</span> Extra page", contents)
+    check_text_in_page(tmp_proj, "snippet.html", r"2.</span> Extra page")
+
+
+def test_simple_with_empty_pages(tmp_path):
+    tmp_proj = check_build(tmp_path, "simple_with_empty_pages/mkdocs.yml")
+
+    check_text_in_page(tmp_proj, "b.html", r"1.</span> heading")
+    check_text_in_page(tmp_proj, "d.html", r"2.</span> heading")
+    check_text_in_page(tmp_proj, "f.html", r"3.</span> heading")

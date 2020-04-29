@@ -34,16 +34,17 @@ class MarkdownPage:
         [l.set_chapter(chapter) for l in self.lines]
 
     def get_max_chapter(self):
-        if len(self.lines) == 0:
-            return 0
-        else:
-            return max([l.get_section_number(1) for l in self.lines])
+        return max([l.get_section_number(1) for l in self.lines])
 
     def get_headings(self):
         return [l for l in self.lines if l.get_is_heading()]
 
+    @property
+    def has_headings(self):
+        return len(self.get_headings()) > 0
+
     def validate(self):
-        headings = [l for l in self.lines if l.get_is_heading()]
+        headings = self.get_headings()
 
         # If no headings, then also valid
         if len(headings) == 0:

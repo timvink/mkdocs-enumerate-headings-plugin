@@ -1,5 +1,4 @@
 # coding=utf-8
-import os
 import logging
 
 from os import linesep
@@ -7,7 +6,7 @@ from collections import OrderedDict
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from .markdown_page import MarkdownPage
-from .utils import read_md, chapter_numbers
+from .utils import read_md
 
 
 class EnumerateHeadingsPlugin(BasePlugin):
@@ -17,7 +16,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
         self.counter_page_chapter = 0
         self.pages = list()
 
-    def on_config(self, config):
+    def on_config(self, config, **kwargs):
 
         # Move plugin to be last in the plugins list
         plugins = config["plugins"]
@@ -38,7 +37,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
         config["plugins"] = plugins
         return config
 
-    def on_nav(self, nav, config, files):
+    def on_nav(self, nav, config, **kwargs):
         """
         The nav event is called after the site navigation is created
         and can be used to alter the site navigation.
@@ -49,31 +48,26 @@ class EnumerateHeadingsPlugin(BasePlugin):
         Args:
             nav: global navigation object
             config: global configuration object
-            files: [description]
 
         Returns:
             nav: global navigation object
         """
 
-        # Find ordering of (unique) pages displayed in site
-        pages = [p.file.src_path for p in nav.pages]
-        pages = list(OrderedDict.fromkeys(pages))
+        self.pages_in_nav = OrderedDict()
 
-        # Find number of chapters per page
-        pages_n_chapters = []
-        for page in pages:
-            abs_path = os.path.join(config["docs_dir"], page)
-            markdown_page = MarkdownPage(read_md(abs_path), config)
-            n_chapters = markdown_page.get_max_chapter()
-            pages_n_chapters.append(n_chapters)
+        chapter_counter = 0
+        for page in nav.pages:
+            src_path = page.file.abs_src_path
+            if not src_path in self.pages_in_nav:
 
-        # Determine sequential chapter numbers
-        page_chapter_numbers = chapter_numbers(pages_n_chapters)
-        self.page_chapter_number = dict(zip(pages, page_chapter_numbers))
+                md_page = MarkdownPage(read_md(src_path), config)
+                if md_page.has_headings:
+                    self.pages_in_nav.update({src_path: chapter_counter + 1})
+                    chapter_counter += md_page.get_max_chapter()
 
         return nav
 
-    def on_page_markdown(self, markdown, page, config, files):
+    def on_page_markdown(self, markdown, page, config, **kwargs):
         """
         The page_markdown event is called after the page's markdown is loaded 
         from file and can be used to alter the Markdown source text. 
@@ -93,8 +87,8 @@ class EnumerateHeadingsPlugin(BasePlugin):
             markdown (str): Markdown source text of page as string
         """
 
-        # Skip enumeration if page not in navigation
-        if not page.file.src_path in self.page_chapter_number.keys():
+        # Skip enumeration if page not in navigation or page does not have any headings
+        if not page.file.abs_src_path in self.pages_in_nav:
             return markdown
 
         lines = markdown.splitlines()
@@ -111,8 +105,8 @@ class EnumerateHeadingsPlugin(BasePlugin):
                 logging.warning(msg)
 
         # Set page chapter number
-        page_chapter = self.page_chapter_number[page.file.src_path]
-        md_page.set_page_chapter(page_chapter)
+        chapter = self.pages_in_nav[page.file.abs_src_path]
+        md_page.set_page_chapter(chapter)
 
         lines = md_page.enumerate_headings()
         return linesep.join(lines)

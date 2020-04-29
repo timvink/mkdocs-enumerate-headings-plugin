@@ -1,5 +1,3 @@
-from typing import List
-
 from mkdocs.utils.meta import get_data
 
 
@@ -23,19 +21,3 @@ def read_md(path: str):
     lines, meta = get_data(source)
 
     return lines.splitlines()
-
-
-def chapter_numbers(n_chapters_per_page: List):
-
-    # First chapter should always be 1
-    # Even if there is no heading 1
-    if n_chapters_per_page[0] == 0:
-        n_chapters_per_page[0] = 1
-
-    chapters = []
-    for i, c in enumerate(n_chapters_per_page):
-        if i == 0:
-            chapters.append(min(c, 1))
-        else:
-            chapters.append(min(c, 1) + sum(n_chapters_per_page[:i]))
-    return chapters
