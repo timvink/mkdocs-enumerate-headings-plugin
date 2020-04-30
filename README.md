@@ -12,9 +12,9 @@
 
 ## Features :star2:
 
-- Automatically numbers all headings and gives each page an sequential chapter number
+- Automatically number all headings and give each page an sequential chapter number
 - Compatible with `plugins` like [awesome-pages](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin) and [monorepo](https://github.com/spotify/mkdocs-monorepo-plugin)
-- Compatible with `markdown_extensions`: [pymdownx.snippets](https://facelessuser.github.io/pymdown-extensions/extensions/snippets/)
+- Compatible with `markdown_extensions` [pymdownx.snippets](https://facelessuser.github.io/pymdown-extensions/extensions/snippets/)
 - Easy to customize styling through CSS
 
 ![demo screencast](demo_screencast.gif)
@@ -40,15 +40,15 @@ plugins:
 ## Usage
 
 There is only one requirement: make sure each markdown page starts with a level 1 header (`#`).
-Pages with no headings and pages with multiple h1 headings are allowed.
+Pages with no headings and pages with multiple level 1 headings are allowed.
 
 > Note this plugin only affects your rendered HTML and does not affect the markdown files.
 
 ### Styling
 
-All heading numbers are wrapped in `<span class='enumerate-headings-plugins'></span>` and can be customized using CSS. See MkDocs documentation for [customizing a theme](https://www.mkdocs.org/user-guide/styling-your-docs/#customizing-a-theme) on how to add an CSS to your theme.
+All heading numbers are wrapped in `<span class='enumerate-headings-plugins'></span>` and can be styled using CSS. See MkDocs documentation for [customizing a theme](https://www.mkdocs.org/user-guide/styling-your-docs/#customizing-a-theme) on how to add an CSS to your theme.
 
-As a suggestion here is some CSS that makes the numbers slightly lighter than the heading:
+As an example you can make the numbering lighter than the heading title by saving the CSS snippet below to a file and adding it to your MkDocs site using the [extra_css](https://www.mkdocs.org/user-guide/configuration/#extra_css) setting in your `mkdocs.yml` file.
 
 ```css
 /* Extra CSS for mkdocs-enumerate-headings-plugin */ 
@@ -72,6 +72,6 @@ plugins:
 
 ## Contributing
 
-Very much open to contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before putting in any work.
+Contributions are very welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before putting in any work.
 
 This plugin was inspired by [ignorantshr/mkdocs-add-number-plugin](https://github.com/ignorantshr/mkdocs-add-number-plugin), which focuses on enumerating single selected pages.
