@@ -48,6 +48,12 @@ class Heading:
             # Subheading
             [2, 1, 0, 0, 0, 0]
         """
+        if self.section_numbering == [0, 0, 0, 0, 0, 0]:
+            raise AssertionError(
+                "[enumerate-heading-plugin] Heading '%s' has not been assigned any section numbering"
+                % self.heading.string
+            )
+
         numbers = self.section_numbering
 
         # Remove any trailing zeros

@@ -26,10 +26,6 @@ class HTMLPage:
     def set_page_chapter(self, chapter: int) -> None:
         [h.set_chapter(chapter) for h in self.headings]
 
-    @property
-    def has_headings(self):
-        return len(self.headings) > 0
-
     def validate(self, page, plugin_config):
 
         # If no headings, then also valid
@@ -54,7 +50,7 @@ class HTMLPage:
     def _find_headings(self):
         """
         Returns:
-            List[bs4.element.Tag]: list of beautifull tags
+            List[Heading]: list of Heading class instances
         """
         return [
             Heading(x, self.soup) for x in self.soup.find_all(re.compile("^h[1-6]$"))

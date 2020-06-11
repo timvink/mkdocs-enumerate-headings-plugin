@@ -7,3 +7,4 @@ mkdocs-monorepo-plugin
 pymdown-extensions
 pytest
 pytest-cov
+beautifulsoup4

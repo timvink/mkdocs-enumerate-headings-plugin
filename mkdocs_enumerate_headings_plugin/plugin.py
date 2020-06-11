@@ -64,7 +64,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
             page.number_h1s = len(h1s) or 0
 
             # Some markdown files could be used multiple times in the same navigation
-            # This would like to unique page instances, but we'd like only use (count) the chapter
+            # This would lead to unique page instances, but we'd like only use (count) the chapter
             # of the first occurence.
             if page.file.abs_src_path not in markdown_files_processed:
                 chapter = chapter_counter + 1
