@@ -72,11 +72,12 @@ class Heading:
         return heading_string
 
     def enumerate(self, add_span_element=False):
+        section_string = self.section_number_string()
+        self.heading.insert(0, " ")
 
-        self.heading.string.replace_with(" " + self.heading.string)
         if add_span_element:
             span = self.soup.new_tag("span", **{"class": "enumerate-heading-plugin"})
-            span.string = self.section_number_string()
-            self.heading.string.insert_before(span)
+            span.string = section_string
+            self.heading.insert(0, span)
         else:
-            self.heading.string.insert_before(self.section_number_string())
+            self.heading.insert(0, section_string)
