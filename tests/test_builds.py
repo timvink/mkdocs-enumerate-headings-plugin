@@ -88,7 +88,7 @@ def check_build(tmp_path, project_mkdocs, exit_code=0):
         "tests/fixtures/projects/%s" % project_mkdocs, tmp_path
     )
     result = build_docs_setup(tmp_proj)
-    assert result.exit_code == exit_code
+    assert result.exit_code == exit_code, result
     return tmp_proj
 
 

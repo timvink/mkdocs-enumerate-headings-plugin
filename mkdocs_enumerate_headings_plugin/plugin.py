@@ -50,9 +50,8 @@ class EnumerateHeadingsPlugin(BasePlugin):
             nav: global navigation object
             config: global configuration object
             files: global files collection
-
+        
         """
-
         chapter_counter = 0
         markdown_files_processed = {}
 

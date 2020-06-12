@@ -14,7 +14,7 @@
 
 - Automatically number all headings and give each page an sequential chapter number
 - Compatible with `plugins` like [awesome-pages](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin) and [monorepo](https://github.com/spotify/mkdocs-monorepo-plugin)
-- Compatible with `markdown_extensions` [pymdownx.snippets](https://facelessuser.github.io/pymdown-extensions/extensions/snippets/)
+- Compatible with `markdown_extensions` like [pymdownx.snippets](https://facelessuser.github.io/pymdown-extensions/extensions/snippets/)
 - Easy to customize styling through CSS
 
 ![demo screencast](demo_screencast.gif)
