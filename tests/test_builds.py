@@ -22,6 +22,8 @@ import re
 import os
 import shutil
 import logging
+import pytest
+import sys
 from click.testing import CliRunner
 from mkdocs.__main__ import build_command
 
@@ -88,7 +90,7 @@ def check_build(tmp_path, project_mkdocs, exit_code=0):
         "tests/fixtures/projects/%s" % project_mkdocs, tmp_path
     )
     result = build_docs_setup(tmp_proj)
-    assert result.exit_code == exit_code
+    assert result.exit_code == exit_code, result
     return tmp_proj
 
 
@@ -148,52 +150,55 @@ def test_simple_no_h1_start(tmp_path):
     check_text_in_page(tmp_proj, "a.html", r"2.1.1</span> l3 after h1")
 
 
-def test_compatibility_monorepo_plugin1(tmp_path):
-    tmp_proj = setup_clean_mkdocs_folder(
-        "tests/fixtures/projects/monorepo_ok/mkdocs.yml", tmp_path
-    )
-    result = build_docs_setup(tmp_proj)
-    assert result.exit_code == 0, "'mkdocs build' command failed"
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Don't test windows, as monorepo doesnt run their unit test on windows either",
+)
+class TestMonorepoPlugin:
+    def test_compatibility_monorepo_plugin1(self, tmp_path):
+        tmp_proj = setup_clean_mkdocs_folder(
+            "tests/fixtures/projects/monorepo_ok/mkdocs.yml", tmp_path
+        )
+        result = build_docs_setup(tmp_proj)
+        assert result.exit_code == 0, "'mkdocs build' command failed"
 
-    page = tmp_proj / "site/test/index.html"
-    contents = page.read_text(encoding="utf-8")
-    assert re.search(r"2.</span> Hello world!", contents)
+        page = tmp_proj / "site/test/index.html"
+        contents = page.read_text(encoding="utf-8")
+        assert re.search(r"2.</span> Hello world!", contents)
 
+    def test_compatibility_monorepo_plugin2(self, tmp_path):
+        tmp_proj = setup_clean_mkdocs_folder(
+            "tests/fixtures/projects/monorepo_ok/mkdocs_enum_first.yml", tmp_path
+        )
+        result = build_docs_setup(tmp_proj)
+        assert result.exit_code == 0, "'mkdocs build' command failed"
 
-def test_compatibility_monorepo_plugin2(tmp_path):
-    tmp_proj = setup_clean_mkdocs_folder(
-        "tests/fixtures/projects/monorepo_ok/mkdocs_enum_first.yml", tmp_path
-    )
-    result = build_docs_setup(tmp_proj)
-    assert result.exit_code == 0, "'mkdocs build' command failed"
+        page = tmp_proj / "site/test/index.html"
+        contents = page.read_text(encoding="utf-8")
+        assert re.search(r"2.</span> Hello world!", contents)
 
-    page = tmp_proj / "site/test/index.html"
-    contents = page.read_text(encoding="utf-8")
-    assert re.search(r"2.</span> Hello world!", contents)
+    def test_compatibility_monorepo_plugin3(self, tmp_path):
+        tmp_proj = setup_clean_mkdocs_folder(
+            "tests/fixtures/projects/monorepo_sample_docs/mkdocs.yml", tmp_path
+        )
+        result = build_docs_setup(tmp_proj)
+        assert result.exit_code == 0, "'mkdocs build' command failed"
 
+        page = tmp_proj / "site/versions/v2/changelog/index.html"
+        contents = page.read_text(encoding="utf-8")
+        assert re.search(r"7.</span> Changelog", contents)
 
-def test_compatibility_monorepo_plugin3(tmp_path):
-    tmp_proj = setup_clean_mkdocs_folder(
-        "tests/fixtures/projects/monorepo_sample_docs/mkdocs.yml", tmp_path
-    )
-    result = build_docs_setup(tmp_proj)
-    assert result.exit_code == 0, "'mkdocs build' command failed"
+    def test_compatibility_monorepo_plugin4(self, tmp_path):
+        tmp_proj = setup_clean_mkdocs_folder(
+            "tests/fixtures/projects/monorepo_sample_docs/mkdocs_enum_first.yml",
+            tmp_path,
+        )
+        result = build_docs_setup(tmp_proj)
+        assert result.exit_code == 0, "'mkdocs build' command failed"
 
-    page = tmp_proj / "site/versions/v2/changelog/index.html"
-    contents = page.read_text(encoding="utf-8")
-    assert re.search(r"7.</span> Changelog", contents)
-
-
-def test_compatibility_monorepo_plugin4(tmp_path):
-    tmp_proj = setup_clean_mkdocs_folder(
-        "tests/fixtures/projects/monorepo_sample_docs/mkdocs_enum_first.yml", tmp_path
-    )
-    result = build_docs_setup(tmp_proj)
-    assert result.exit_code == 0, "'mkdocs build' command failed"
-
-    page = tmp_proj / "site/versions/v2/changelog/index.html"
-    contents = page.read_text(encoding="utf-8")
-    assert re.search(r"7.</span> Changelog", contents)
+        page = tmp_proj / "site/versions/v2/changelog/index.html"
+        contents = page.read_text(encoding="utf-8")
+        assert re.search(r"7.</span> Changelog", contents)
 
 
 def test_compatibility_awesomepages_plugin1(tmp_path):

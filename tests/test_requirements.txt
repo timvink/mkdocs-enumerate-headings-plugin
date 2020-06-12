@@ -1,4 +1,5 @@
 click
+markdown
 mkdocs>=1.1
 mkdocs-awesome-pages-plugin
 mkdocs-material
@@ -6,3 +7,4 @@ mkdocs-monorepo-plugin
 pymdown-extensions
 pytest
 pytest-cov
+beautifulsoup4
