@@ -39,7 +39,7 @@ plugins:
 
 ## Usage
 
-There is only one requirement: make sure each markdown page starts with a level 1 header (`#`).
+There is only one requirement: make sure each markdown page starts with a level 1 header (see [how to write markdown headers](https://daringfireball.net/projects/markdown/syntax#header)).
 Pages with no headings and pages with multiple level 1 headings are allowed.
 
 > Note this plugin only affects your rendered HTML and does not affect the markdown files.
