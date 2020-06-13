@@ -5,4 +5,4 @@ plugins:
     - search
     - enumerate-headings:
         strict: false
-        toc_depth: 6
+        toc_depth: 1

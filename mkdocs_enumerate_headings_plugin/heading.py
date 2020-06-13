@@ -19,6 +19,18 @@ class Heading:
         assert self.heading.name in ["h1", "h2", "h3", "h4", "h5", "h6"]
         return int(self.heading.name[1])
 
+    @property
+    def anchorlink(self) -> str:
+        """Returns HTML anchorlink
+        
+        F.e. a tag with <h1 id="the-homepage">The Homepage</h1>
+        would have anchor link "#the-homepage"
+
+        Returns:
+            str: anchorlink
+        """
+        return "#" + self.heading.get("id")
+
     def set_section_number(self, section_number: int, depth: int):
         self.section_numbering[depth - 1] = section_number
 

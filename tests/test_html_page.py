@@ -76,7 +76,7 @@ def test_enumeration(pagename, valid, caplog):
             assert record.levelname == "WARNING"
 
     # Correct enumeration
-    enum_html_page = html_page.enumerate_headings(add_span_element=False)
+    html_page.enumerate_headings(add_span_element=False)
     reference_html_page = load_page("tests/fixtures/pages/%s-enumerated.md" % pagename)
     soup = BeautifulSoup(reference_html_page, "html.parser")
-    assert enum_html_page == str(soup)
+    assert str(html_page) == str(soup)

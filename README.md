@@ -39,7 +39,7 @@ plugins:
 
 ## Usage
 
-There is only one requirement: make sure each markdown page starts with a level 1 header (`#`).
+There is only one requirement: make sure each markdown page starts with a level 1 header (see [how to write markdown headers](https://daringfireball.net/projects/markdown/syntax#header)).
 Pages with no headings and pages with multiple level 1 headings are allowed.
 
 > Note this plugin only affects your rendered HTML and does not affect the markdown files.
@@ -66,9 +66,11 @@ You can customize the plugin by setting options in `mkdocs.yml`:
 plugins:
     - enumerate-headings:
         strict: true
+        toc_depth: 0
 ```
 
 - **`strict`** (default `true`): Raise errors instead of warnings when first heading on a page is not a level one heading (single `#`). Note that in `strict: false` mode the heading numbers might be incorrect between pages and before and after a level 1 heading.
+- **`toc_depth`** (default `0`): Up to which level the table of contents should be enumerated as well. Default is 0, which means the TOC is not enumerated at all.
 
 ## Contributing
 

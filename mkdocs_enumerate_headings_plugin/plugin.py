@@ -6,8 +6,27 @@ from mkdocs_enumerate_headings_plugin.html_page import HTMLPage
 from bs4 import BeautifulSoup
 
 
+class ConfigurationError(Exception):
+    pass
+
+
 class EnumerateHeadingsPlugin(BasePlugin):
-    config_scheme = (("strict", config_options.Type(bool, default=True)),)
+    config_scheme = (
+        ("strict", config_options.Type(bool, default=True)),
+        ("toc_depth", config_options.Type(int, default=0)),
+    )
+
+    def on_pre_build(self, config, **kwargs):
+        """Validates plugin user configuration input
+
+        Args:
+            config (dict): plugin configuration
+        """
+        if self.config.get("toc_depth", 0) > 6:
+            raise ConfigurationError(
+                "toc_depth is set to %s, but max is 6. Update plugin settings in mkdocs.yml."
+                % self.config.get("toc_depth")
+            )
 
     def on_config(self, config, **kwargs):
 
@@ -104,4 +123,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
 
         # Set chapter and enumerate the headings
         htmlpage.set_page_chapter(page.chapter)
-        return htmlpage.enumerate_headings()
+
+        htmlpage.enumerate_headings()
+        htmlpage.enumerate_toc(depth=self.config.get("toc_depth"))
+        return str(htmlpage)
