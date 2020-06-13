@@ -66,9 +66,11 @@ You can customize the plugin by setting options in `mkdocs.yml`:
 plugins:
     - enumerate-headings:
         strict: true
+        toc_depth: 0
 ```
 
 - **`strict`** (default `true`): Raise errors instead of warnings when first heading on a page is not a level one heading (single `#`). Note that in `strict: false` mode the heading numbers might be incorrect between pages and before and after a level 1 heading.
+- **`toc_depth`** (default `0`): Up to which level the table of contents should be enumerated as well. Default is 0, which means the TOC is not enumerated at all.
 
 ## Contributing
 

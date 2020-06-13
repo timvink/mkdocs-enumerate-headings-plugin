@@ -138,6 +138,21 @@ def test_simple_with_nav(tmp_path):
     check_text_in_page(tmp_proj, "a_third_page.html", r"4.</span> Normal")
 
 
+class TestTOCDepth:
+    def test_depth_1(self, tmp_path):
+
+        tmp_proj = check_build(tmp_path, "simple/mkdocs_notstrict_depth1.yml")
+        check_text_in_page(
+            tmp_proj, "index.html", r"""href="#homepage">1. Homepage</a>"""
+        )
+        check_text_in_page(
+            tmp_proj, "index.html", r"""href="#another-heading">another heading</a>"""
+        )
+
+    def test_depth_7(self, tmp_path):
+        check_build(tmp_path, "simple/mkdocs_notstrict_depth7.yml", 1)
+
+
 def test_simple_no_h1_start(tmp_path):
 
     # non-strict build
