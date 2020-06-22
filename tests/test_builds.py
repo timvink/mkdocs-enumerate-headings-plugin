@@ -248,6 +248,30 @@ def test_compatibility_awesomepages_plugin2(tmp_path):
     assert re.search(r"1.</span> Page 4", contents)
 
 
+def test_compatibility_material(tmp_path):
+    tmp_proj = setup_clean_mkdocs_folder(
+        "tests/fixtures/projects/material/mkdocs.yml", tmp_path
+    )
+    result = build_docs_setup(tmp_proj)
+    assert result.exit_code == 0, "'mkdocs build' command failed"
+
+    page = tmp_proj / "site/index.html"
+    contents = page.read_text(encoding="utf-8")
+    assert re.search(r"1.</span> Heading 1", contents)
+
+    page = tmp_proj / "site/01.Introduction/Empty-File/index.html"
+    contents = page.read_text(encoding="utf-8")
+    assert re.search(r"2.</span> Empty File", contents)
+
+    page = tmp_proj / "site/01.Introduction/Missing-Heading-1/index.html"
+    contents = page.read_text(encoding="utf-8")
+    assert re.search(r"3.</span> Missing Heading 1", contents)
+
+    page = tmp_proj / "site/01.Introduction/My-Page-Name/index.html"
+    contents = page.read_text(encoding="utf-8")
+    assert re.search(r"4.</span> YAML Title", contents)
+
+
 def test_compatibility_pymarkx_snippets1(tmp_path):
 
     tmp_proj = setup_clean_mkdocs_folder(
@@ -281,6 +305,6 @@ def test_compatibility_pymarkx_snippets2(tmp_path):
 def test_simple_with_empty_pages(tmp_path):
     tmp_proj = check_build(tmp_path, "simple_with_empty_pages/mkdocs.yml")
 
-    check_text_in_page(tmp_proj, "b.html", r"1.</span> heading")
-    check_text_in_page(tmp_proj, "d.html", r"2.</span> heading")
-    check_text_in_page(tmp_proj, "f.html", r"3.</span> heading")
+    check_text_in_page(tmp_proj, "b.html", r"2.</span> heading")
+    check_text_in_page(tmp_proj, "d.html", r"4.</span> heading")
+    check_text_in_page(tmp_proj, "f.html", r"6.</span> heading")
