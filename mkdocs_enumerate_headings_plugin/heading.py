@@ -29,7 +29,10 @@ class Heading:
         Returns:
             str: anchorlink
         """
-        return "#" + self.heading.get("id")
+        if self.heading.get("id"):
+            return "#" + self.heading.get("id")
+        else:
+            return None
 
     def set_section_number(self, section_number: int, depth: int):
         self.section_numbering[depth - 1] = section_number

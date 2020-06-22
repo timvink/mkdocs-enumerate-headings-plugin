@@ -1,0 +1,17 @@
+# Project Information
+site_name: "material-enumerate-headings-unit-test"
+
+# Theme
+theme:
+  name: material
+  features:
+    - tabs
+
+# Plugins
+plugins:
+  - search
+  - enumerate-headings
+  - awesome-pages:
+      filename: .pages
+      collapse_single_pages: false
+      strict: false

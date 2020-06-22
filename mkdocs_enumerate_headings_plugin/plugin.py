@@ -75,14 +75,21 @@ class EnumerateHeadingsPlugin(BasePlugin):
         markdown_files_processed = {}
 
         for page in nav.pages:
+            # We need to build the pages in order to find out
+            # if there are more than one heading 1's in the page
             page.read_source(config)
             page.render(config, files)
             soup = BeautifulSoup(page.content, "html.parser")
             h1s = soup.find_all("h1")
-            page.number_h1s = len(h1s) or 0
+
+            # We assume here a page always has a heading 1, even if empty
+            # MkDocs will determine the title based on a simple heuristic
+            # (see https://www.mkdocs.org/user-guide/writing-your-docs/#meta-data)
+            # and some themes will insert the page title as a heading 1, if heading 1 is missing
+            page.number_h1s = max(len(h1s), 1)
 
             # Some markdown files could be used multiple times in the same navigation
-            # This would lead to unique page instances, but we'd like only use (count) the chapter
+            # This would lead to unique page instances, but we'd like to only use (count) the chapter
             # of the first occurence.
             if page.file.abs_src_path not in markdown_files_processed:
                 chapter = chapter_counter + 1
