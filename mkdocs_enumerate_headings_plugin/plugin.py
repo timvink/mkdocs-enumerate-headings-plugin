@@ -1,5 +1,7 @@
 # coding=utf-8
 
+import logging
+
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs_enumerate_headings_plugin.html_page import HTMLPage
@@ -122,6 +124,13 @@ class EnumerateHeadingsPlugin(BasePlugin):
 
         # Skip enumeration if page not in navigation, or if page does not have any headings
         if not hasattr(page, "chapter"):
+            return output
+
+        if str(page.file.abs_src_path).endswith("ipynb"):
+            logging.warning(
+                "[enumerate-headings-plugin] Skipping enumeration of %s"
+                % page.file.src_path
+            )
             return output
 
         # Process HTML
