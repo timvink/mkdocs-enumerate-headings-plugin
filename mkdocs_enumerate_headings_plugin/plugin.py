@@ -32,27 +32,39 @@ class EnumerateHeadingsPlugin(BasePlugin):
 
     def on_config(self, config, **kwargs):
 
-        # Move plugin to be last in the plugins list
-        # Because some plugins alter the navigation, and we need the final navigation
-        # This hack might not be necessary in future MkDocs versions, when `nav` is available on other later events as well
-        plugins = config["plugins"]
-        plugins.move_to_end("enumerate-headings")
+        # This plugin needs the navigation
+        # But some plugins alter the navigation
+        # MkDocs executes plugins in order they are defined
+        # So we can do some checks on other plugins defined.
 
-        # Move plugin's on_nav event to be last to run
-        # Because some plugins alter the navigation, and we need the final navigation
-        # This hack might not be necessary in future MkDocs versions, when `nav` is available on other later events as well
-        nav_events = plugins.events["nav"]
+        plugins = [*dict(config["plugins"])]
 
-        def get_plugin_name(bound_method):
-            return type(bound_method.__self__).__name__
+        def check_position(plugin):
+            if plugin in plugins:
+                if plugins.index("enumerate-headings") < plugins.index(plugin):
+                    logging.warning(
+                        "[enumerate-headings-plugin] enumerate-headings should be defined after the %s plugin in your mkdocs.yml file"
+                        % plugin
+                    )
 
-        plugin_nav_event = [
-            e for e in nav_events if get_plugin_name(e) == "EnumerateHeadingsPlugin"
-        ][0]
-        nav_events.append(nav_events.pop(nav_events.index(plugin_nav_event)))
-        plugins.events["nav"] = nav_events
+        # Check list of plugins that alter the navigation
+        # To make sure they are not defined after the enumerate-heading plugin
+        # taken from https://github.com/mkdocs/mkdocs/wiki/MkDocs-Plugins#navigation--page-building
+        check_plugins = [
+            "monorepo",
+            "exclude",
+            "select-files",
+            "awesome-pages",
+            "mkdocs-nav-enhancements",
+            "navtitles",
+            "encryptcontent",
+            "awesome-list",
+            "toc-sidebar",
+            "mkdocs-simple-hooks",
+        ]
+        for p in check_plugins:
+            check_position(p)
 
-        config["plugins"] = plugins
         return config
 
     def on_nav(self, nav, config, files, **kwargs):

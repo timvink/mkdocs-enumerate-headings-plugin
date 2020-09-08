@@ -183,12 +183,18 @@ class TestMonorepoPlugin:
         assert re.search(r"2.</span> Hello world!", contents)
 
     @pytest.mark.skip(reason="monorepo v0.4.9 is broken in production")
-    def test_compatibility_monorepo_plugin2(self, tmp_path):
+    def test_compatibility_monorepo_plugin2(self, tmp_path, caplog):
         tmp_proj = setup_clean_mkdocs_folder(
             "tests/fixtures/projects/monorepo_ok/mkdocs_enum_first.yml", tmp_path
         )
         result = build_docs_setup(tmp_proj)
         assert result.exit_code == 0, "'mkdocs build' command failed"
+
+        # Make sure warning is raised
+        assert (
+            "[enumerate-headings-plugin] enumerate-headings should be defined after"
+            in caplog.text
+        )
 
         page = tmp_proj / "site/test/index.html"
         contents = page.read_text(encoding="utf-8")
@@ -207,13 +213,19 @@ class TestMonorepoPlugin:
         assert re.search(r"7.</span> Changelog", contents)
 
     @pytest.mark.skip(reason="monorepo v0.4.9 is broken in production")
-    def test_compatibility_monorepo_plugin4(self, tmp_path):
+    def test_compatibility_monorepo_plugin4(self, tmp_path, caplog):
         tmp_proj = setup_clean_mkdocs_folder(
             "tests/fixtures/projects/monorepo_sample_docs/mkdocs_enum_first.yml",
             tmp_path,
         )
         result = build_docs_setup(tmp_proj)
         assert result.exit_code == 0, "'mkdocs build' command failed"
+
+        # Make sure warning is raised
+        assert (
+            "[enumerate-headings-plugin] enumerate-headings should be defined after"
+            in caplog.text
+        )
 
         page = tmp_proj / "site/versions/v2/changelog/index.html"
         contents = page.read_text(encoding="utf-8")
@@ -236,20 +248,26 @@ def test_compatibility_awesomepages_plugin1(tmp_path):
     assert re.search(r"1.</span> Page 4", contents)
 
 
-def test_compatibility_awesomepages_plugin2(tmp_path):
+def test_compatibility_awesomepages_plugin2(tmp_path, caplog):
     tmp_proj = setup_clean_mkdocs_folder(
         "tests/fixtures/projects/awesome_pages/mkdocs_enum_first.yml", tmp_path
     )
     result = build_docs_setup(tmp_proj)
     assert result.exit_code == 0, "'mkdocs build' command failed"
 
-    page = tmp_proj / "site/index.html"
-    contents = page.read_text(encoding="utf-8")
-    assert re.search(r"5.</span> Homepage", contents)
+    # Make sure warning is raised
+    assert (
+        "[enumerate-headings-plugin] enumerate-headings should be defined after"
+        in caplog.text
+    )
 
-    page = tmp_proj / "site/section2/page4/index.html"
-    contents = page.read_text(encoding="utf-8")
-    assert re.search(r"1.</span> Page 4", contents)
+    # page = tmp_proj / "site/index.html"
+    # contents = page.read_text(encoding="utf-8")
+    # assert re.search(r"5.</span> Homepage", contents)
+
+    # page = tmp_proj / "site/section2/page4/index.html"
+    # contents = page.read_text(encoding="utf-8")
+    # assert re.search(r"1.</span> Page 4", contents)
 
 
 def test_compatibility_material(tmp_path):

@@ -37,6 +37,8 @@ plugins:
   - enumerate-headings
 ```
 
+> MkDocs executes plugins in the order they are defined. If you use any other plugins that alter the navigation, make sure to define them *before* the `enumerate-headings` plugin.
+
 > If you have no `plugins` entry in your config file yet, you'll likely also want to add the `search` plugin. MkDocs enables it by default if there is no `plugins` entry set.
 
 ## Usage
