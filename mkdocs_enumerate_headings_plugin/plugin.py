@@ -1,7 +1,9 @@
 # coding=utf-8
 
+
 import logging
 
+from collections import OrderedDict
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs_enumerate_headings_plugin.html_page import HTMLPage
@@ -37,9 +39,9 @@ class EnumerateHeadingsPlugin(BasePlugin):
         # MkDocs executes plugins in order they are defined
         # So we can do some checks on other plugins defined.
 
-        plugins = [*dict(config["plugins"])]
+        plugins = [*OrderedDict(config["plugins"])]
 
-        def check_position(plugin):
+        def check_position(plugin, plugins):
             if plugin in plugins:
                 if plugins.index("enumerate-headings") < plugins.index(plugin):
                     logging.warning(
@@ -63,7 +65,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
             "mkdocs-simple-hooks",
         ]
         for p in check_plugins:
-            check_position(p)
+            check_position(p, plugins)
 
         return config
 
