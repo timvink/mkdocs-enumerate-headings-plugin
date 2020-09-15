@@ -1,0 +1,15 @@
+site_name: test plugin
+use_directory_urls: false
+
+markdown_extensions:
+    - toc:
+        permalink: true
+  
+plugins:
+    - enumerate-headings:
+        toc_depth: 4
+        strict: false
+    - awesome-pages:
+        filename: .pages
+        collapse_single_pages: false
+        strict: false

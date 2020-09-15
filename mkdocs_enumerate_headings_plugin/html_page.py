@@ -30,6 +30,9 @@ class HTMLPage:
 
         for heading in self.headings:
             for link in links:
+                if "headerlink" in link.get("class", []):
+                    # This avoids enumerating permalinks
+                    continue
                 if link.get("href") == heading.anchorlink and heading.depth <= depth:
                     link.insert(0, " ")
                     link.insert(0, heading.section_number_string())
