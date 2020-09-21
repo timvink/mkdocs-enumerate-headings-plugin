@@ -9,6 +9,8 @@ from mkdocs.plugins import BasePlugin
 from mkdocs_enumerate_headings_plugin.html_page import HTMLPage
 from bs4 import BeautifulSoup
 
+logger = logging.getLogger("mkdocs.plugins")
+
 
 class ConfigurationError(Exception):
     pass
@@ -44,7 +46,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
         def check_position(plugin, plugins):
             if plugin in plugins:
                 if plugins.index("enumerate-headings") < plugins.index(plugin):
-                    logging.warning(
+                    logger.warning(
                         "[enumerate-headings-plugin] enumerate-headings should be defined after the %s plugin in your mkdocs.yml file"
                         % plugin
                     )
@@ -141,7 +143,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
             return output
 
         if str(page.file.abs_src_path).endswith("ipynb"):
-            logging.warning(
+            logger.warning(
                 "[enumerate-headings-plugin] Skipping enumeration of %s"
                 % page.file.src_path
             )

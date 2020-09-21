@@ -193,7 +193,7 @@ class TestMonorepoPlugin:
         # Make sure warning is raised
         assert (
             "[enumerate-headings-plugin] enumerate-headings should be defined after"
-            in caplog.text
+            in result.output
         )
 
         page = tmp_proj / "site/test/index.html"
@@ -224,7 +224,7 @@ class TestMonorepoPlugin:
         # Make sure warning is raised
         assert (
             "[enumerate-headings-plugin] enumerate-headings should be defined after"
-            in caplog.text
+            in result.output
         )
 
         page = tmp_proj / "site/versions/v2/changelog/index.html"
@@ -258,16 +258,8 @@ def test_compatibility_awesomepages_plugin2(tmp_path, caplog):
     # Make sure warning is raised
     assert (
         "[enumerate-headings-plugin] enumerate-headings should be defined after"
-        in caplog.text
+        in result.output
     )
-
-    # page = tmp_proj / "site/index.html"
-    # contents = page.read_text(encoding="utf-8")
-    # assert re.search(r"5.</span> Homepage", contents)
-
-    # page = tmp_proj / "site/section2/page4/index.html"
-    # contents = page.read_text(encoding="utf-8")
-    # assert re.search(r"1.</span> Page 4", contents)
 
 
 def test_compatibility_material(tmp_path):
