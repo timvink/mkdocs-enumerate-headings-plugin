@@ -61,9 +61,8 @@ As an example you can make the numbering lighter than the heading title by savin
 
 ```css
 /* Extra CSS for mkdocs-enumerate-headings-plugin */ 
-.enumerate-headings-plugins {
-  /* 100% is baseline so 250% is a lot lighter */
-  filter: brightness(250%);
+.enumerate-headings-plugin {
+  filter: opacity(35%);
 }
 ```
 
