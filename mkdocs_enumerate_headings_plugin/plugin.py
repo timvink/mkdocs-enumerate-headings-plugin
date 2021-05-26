@@ -65,6 +65,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
             "awesome-list",
             "toc-sidebar",
             "mkdocs-simple-hooks",
+            "mkdocstrings"
         ]
         for p in check_plugins:
             check_position(p, plugins)
