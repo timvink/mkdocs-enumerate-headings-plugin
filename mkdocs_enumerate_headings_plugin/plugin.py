@@ -13,10 +13,6 @@ from bs4 import BeautifulSoup
 logger = logging.getLogger("mkdocs.plugins")
 
 
-class ConfigurationError(Exception):
-    pass
-
-
 class EnumerateHeadingsPlugin(BasePlugin):
     config_scheme = (
         ("strict", config_options.Type(bool, default=True)),
