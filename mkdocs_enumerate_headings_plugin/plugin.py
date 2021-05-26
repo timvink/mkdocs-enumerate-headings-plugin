@@ -6,6 +6,7 @@ import logging
 from collections import OrderedDict
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
+from mkdocs.exceptions import ConfigurationError
 from mkdocs_enumerate_headings_plugin.html_page import HTMLPage
 from bs4 import BeautifulSoup
 
@@ -46,7 +47,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
         def check_position(plugin, plugins):
             if plugin in plugins:
                 if plugins.index("enumerate-headings") < plugins.index(plugin):
-                    logger.warning(
+                    raise ConfigurationError(
                         "[enumerate-headings-plugin] enumerate-headings should be defined after the %s plugin in your mkdocs.yml file"
                         % plugin
                     )

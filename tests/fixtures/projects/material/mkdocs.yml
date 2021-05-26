@@ -10,8 +10,8 @@ theme:
 # Plugins
 plugins:
   - search
-  - enumerate-headings
   - awesome-pages:
       filename: .pages
       collapse_single_pages: false
       strict: false
+  - enumerate-headings

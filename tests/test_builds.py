@@ -253,13 +253,7 @@ def test_compatibility_awesomepages_plugin2(tmp_path, caplog):
         "tests/fixtures/projects/awesome_pages/mkdocs_enum_first.yml", tmp_path
     )
     result = build_docs_setup(tmp_proj)
-    assert result.exit_code == 0, "'mkdocs build' command failed"
-
-    # Make sure warning is raised
-    assert (
-        "[enumerate-headings-plugin] enumerate-headings should be defined after"
-        in result.output
-    )
+    assert result.exit_code == 1, "'mkdocs build' command failed"
 
 
 def test_compatibility_material(tmp_path):
