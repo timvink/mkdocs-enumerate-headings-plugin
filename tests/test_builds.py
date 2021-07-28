@@ -243,7 +243,7 @@ def test_compatibility_awesomepages_plugin1(tmp_path):
     contents = page.read_text(encoding="utf-8")
     assert re.search(r"5.</span> Homepage", contents)
 
-    page = tmp_proj / "site/section2/page4/index.html"
+    page = tmp_proj / "site/section2/page4.html"
     contents = page.read_text(encoding="utf-8")
     assert re.search(r"1.</span> Page 4", contents)
 
@@ -267,15 +267,15 @@ def test_compatibility_material(tmp_path):
     contents = page.read_text(encoding="utf-8")
     assert re.search(r"1.</span> Heading 1", contents)
 
-    page = tmp_proj / "site/01.Introduction/Empty-File/index.html"
+    page = tmp_proj / "site/01.Introduction/Empty-File.html"
     contents = page.read_text(encoding="utf-8")
     assert re.search(r"2.</span> Empty File", contents)
 
-    page = tmp_proj / "site/01.Introduction/Missing-Heading-1/index.html"
+    page = tmp_proj / "site/01.Introduction/Missing-Heading-1.html"
     contents = page.read_text(encoding="utf-8")
     assert re.search(r"3.</span> Missing Heading 1", contents)
 
-    page = tmp_proj / "site/01.Introduction/My-Page-Name/index.html"
+    page = tmp_proj / "site/01.Introduction/My-Page-Name.html"
     contents = page.read_text(encoding="utf-8")
     assert re.search(r"4.</span> YAML Title", contents)
 

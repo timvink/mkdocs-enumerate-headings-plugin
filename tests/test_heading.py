@@ -52,7 +52,7 @@ def test_span_addition():
     heading.enumerate(add_span_element=True)
     assert (
         str(heading.heading)
-        == '<h2><span class="enumerate-heading-plugin">2.0.1</span> _dummy_test</h2>'
+        == '<h2><span class="enumerate-headings-plugin enumerate-heading-plugin">2.0.1</span> _dummy_test</h2>'
     )
 
 

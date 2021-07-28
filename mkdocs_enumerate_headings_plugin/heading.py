@@ -90,8 +90,11 @@ class Heading:
         section_string = self.section_number_string()
         self.heading.insert(0, " ")
 
+        # Note we add both enumerate-headings-plugin and enumerate-heading-plugin
+        # This is for backward compatibility
+        # https://github.com/timvink/mkdocs-enumerate-headings-plugin/issues/24
         if add_span_element:
-            span = self.soup.new_tag("span", **{"class": "enumerate-heading-plugin"})
+            span = self.soup.new_tag("span", **{"class": "enumerate-headings-plugin enumerate-heading-plugin"})
             span.string = section_string
             self.heading.insert(0, span)
         else:
