@@ -1,5 +1,6 @@
 # Project Information
 site_name: "material-enumerate-headings-unit-test"
+use_directory_urls: false
 
 # Theme
 theme:

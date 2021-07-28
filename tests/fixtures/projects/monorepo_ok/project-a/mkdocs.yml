@@ -1,5 +1,6 @@
 site_name: 'test'
 site_description: 'This is a subdomain site.'
+use_directory_urls: true
 
 plugins:
   - monorepo

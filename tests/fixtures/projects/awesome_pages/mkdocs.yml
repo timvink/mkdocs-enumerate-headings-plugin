@@ -1,6 +1,8 @@
 site_name: 'test_awesome'
 site_description: 'This site tests compatibility with mkdocs-awesome-pages-plugin'
 
+use_directory_urls: false
+
 plugins:
   - search
   - awesome-pages
