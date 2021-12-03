@@ -10,7 +10,7 @@
 
 [MkDocs](https://www.mkdocs.org/) Plugin to enumerate the headings (h1-h6) across MkDocs pages.
 
-> :point_right: If you're looking to add heading numbers to your site to support exporting to PDF, have a look at [mkdocs-print-site-plugin](https://timvink.github.io/mkdocs-print-site-plugin/) instead!
+> :point_right: If you're looking to add heading numbers to your site to support exporting to single-page standalone HTML or a PDF file, have a look at [mkdocs-print-site-plugin](https://timvink.github.io/mkdocs-print-site-plugin/) instead!
 
 ## Features :star2:
 
