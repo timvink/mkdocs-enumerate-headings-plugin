@@ -17,6 +17,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
     config_scheme = (
         ("strict", config_options.Type(bool, default=True)),
         ("toc_depth", config_options.Type(int, default=0)),
+        ("increment_across_pages", config_options.Type(bool, default=True)),
     )
 
     def on_pre_build(self, config, **kwargs):
@@ -103,6 +104,10 @@ class EnumerateHeadingsPlugin(BasePlugin):
             # (see https://www.mkdocs.org/user-guide/writing-your-docs/#meta-data)
             # and some themes will insert the page title as a heading 1, if heading 1 is missing
             page.number_h1s = max(len(h1s), 1)
+
+            # Optionally do not increment counter across pages.
+            if self.config.get('increment_across_pages') is False:
+                chapter_counter = 0
 
             # Some markdown files could be used multiple times in the same navigation
             # This would lead to unique page instances, but we'd like to only use (count) the chapter

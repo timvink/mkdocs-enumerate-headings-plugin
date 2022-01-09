@@ -15,4 +15,5 @@ plugins:
       filename: .pages
       collapse_single_pages: false
       strict: false
-  - enumerate-headings
+  - enumerate-headings:
+      increment_across_pages: true
