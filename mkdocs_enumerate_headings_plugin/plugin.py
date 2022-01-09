@@ -8,6 +8,7 @@ from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs.exceptions import ConfigurationError
 from mkdocs_enumerate_headings_plugin.html_page import HTMLPage
+from mkdocs_enumerate_headings_plugin.exclude import exclude
 from bs4 import BeautifulSoup
 
 logger = logging.getLogger("mkdocs.plugins")
@@ -17,6 +18,8 @@ class EnumerateHeadingsPlugin(BasePlugin):
     config_scheme = (
         ("strict", config_options.Type(bool, default=True)),
         ("toc_depth", config_options.Type(int, default=0)),
+        ("increment_across_pages", config_options.Type(bool, default=True)),
+        ("exclude", config_options.Type(list, default=[])),
     )
 
     def on_pre_build(self, config, **kwargs):
@@ -91,6 +94,12 @@ class EnumerateHeadingsPlugin(BasePlugin):
         markdown_files_processed = {}
 
         for page in nav.pages:
+
+            # Exclude pages specified in config
+            excluded_pages = self.config.get("exclude", [])
+            if exclude(page.file.src_path, excluded_pages):
+                continue
+
             # We need to build the pages in order to find out
             # if there are more than one heading 1's in the page
             page.read_source(config)
@@ -103,6 +112,10 @@ class EnumerateHeadingsPlugin(BasePlugin):
             # (see https://www.mkdocs.org/user-guide/writing-your-docs/#meta-data)
             # and some themes will insert the page title as a heading 1, if heading 1 is missing
             page.number_h1s = max(len(h1s), 1)
+
+            # Optionally do not increment counter across pages.
+            if self.config.get('increment_across_pages') is False:
+                chapter_counter = 0
 
             # Some markdown files could be used multiple times in the same navigation
             # This would lead to unique page instances, but we'd like to only use (count) the chapter
@@ -135,6 +148,11 @@ class EnumerateHeadingsPlugin(BasePlugin):
         Returns:
             output (str): output of rendered template as string
         """
+
+        # Exclude pages specified in config
+        excluded_pages = self.config.get("exclude", [])
+        if exclude(page.file.src_path, excluded_pages):
+            return
 
         # Skip enumeration if page not in navigation, or if page does not have any headings
         if not hasattr(page, "chapter"):

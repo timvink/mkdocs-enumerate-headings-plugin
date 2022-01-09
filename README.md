@@ -14,7 +14,7 @@
 
 ## Features :star2:
 
-- Automatically number all headings and give each page an sequential chapter number
+- Automatically number all headings and (optionally) give each page an sequential chapter number
 - Great for writing (technical) reports
 - Compatible with `plugins` like [awesome-pages](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin) and [monorepo](https://github.com/spotify/mkdocs-monorepo-plugin)
 - Compatible with `markdown_extensions` like [pymdownx.snippets](https://facelessuser.github.io/pymdown-extensions/extensions/snippets/)
@@ -45,7 +45,7 @@ plugins:
 
 ## Usage
 
-`enumerate-headings` will increment the chapter number for each new page (in the order they appear in the navigation) and enumerate all subheadings.
+`enumerate-headings` will increment the chapter number for each new page (in the order they appear in the navigation) and enumerate all subheadings (unless you disable in this in the options).
 
 There is only one requirement: make sure each markdown page starts with a level 1 header (see [how to write markdown headers](https://daringfireball.net/projects/markdown/syntax#header)). Some MkDocs themes will handle this for your automatically, inserting the page title as a heading 1 if you do not specify one. If a heading 1 is still missing, you'll get a helpful error.
 
@@ -75,10 +75,16 @@ plugins:
     - enumerate-headings:
         toc_depth: 0
         strict: true
+        increment_across_pages: true
+        exclude:
+          - index.md
+          - another_page.md
 ```
 
 - **`toc_depth`** (default `0`): Up to which level the table of contents should be enumerated as well. Default is 0, which means the TOC is not enumerated at all. Max is 6 (showing all enumeration)
 - **`strict`** (default `true`): Raise errors instead of warnings when first heading on a page is not a level one heading (single `#`) and your MkDocs theme has not inserted the page title as a heading 1 for you. Note that in `strict: false` mode the heading numbers might be incorrect between pages and before and after a level 1 heading.
+- **`increment_across_pages`** (default `true`): Increment the chapter number for each new page (in the order they appear in the navigation). If disabled, each page will start from 1.
+- **`exclude`** (default *not specified*): Specify a list of page source paths (one per line) that should not have enumeration (excluded from processing by this plugin). This can be useful for example to remove enumeration from the front page. The source path of a page is relative to your `docs/` folder. You can also use [globs](https://docs.python.org/3/library/glob.html) instead of source paths. For example, to exclude `docs/subfolder/page.md` specify in your `mkdocs.yml` a line under `exclude:` with `- subfolder/page.md`
 
 ## Contributing
 
