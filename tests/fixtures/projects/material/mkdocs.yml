@@ -17,5 +17,5 @@ plugins:
       strict: false
   - enumerate-headings:
       increment_across_pages: true
-      exclude:
-        - index.md
+      # exclude:
+      #   - index.md
