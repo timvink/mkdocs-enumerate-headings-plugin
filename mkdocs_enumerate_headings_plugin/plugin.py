@@ -19,6 +19,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
         ("strict", config_options.Type(bool, default=True)),
         ("toc_depth", config_options.Type(int, default=0)),
         ("increment_across_pages", config_options.Type(bool, default=True)),
+        ("restart_increment_after", config_options.Type(list, default=[])),
         ("exclude", config_options.Type(list, default=[])),
     )
 
@@ -115,6 +116,11 @@ class EnumerateHeadingsPlugin(BasePlugin):
 
             # Optionally do not increment counter across pages.
             if self.config.get('increment_across_pages') is False:
+                chapter_counter = 0
+
+            # Optionally reset the counter for this page
+            restarting_pages = self.config.get("restart_increment_after", [])
+            if exclude(page.file.src_path, restarting_pages):
                 chapter_counter = 0
 
             # Some markdown files could be used multiple times in the same navigation
