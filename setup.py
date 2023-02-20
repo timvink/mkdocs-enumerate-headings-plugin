@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="mkdocs-enumerate-headings-plugin",
-    version="0.5.0",
+    version="0.6.0",
     description="MkDocs Plugin to enumerate the headings (h1-h6) across site pages",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -14,7 +14,7 @@ setup(
     author="timvink",
     author_email="vinktim@gmail.com",
     license="MIT",
-    python_requires=">=3.5",
+    python_requires=">=3.7",
     install_requires=["mkdocs>=1.0.4", "beautifulsoup4>=4.9.0"],
     classifiers=[
         "Intended Audience :: Developers",
