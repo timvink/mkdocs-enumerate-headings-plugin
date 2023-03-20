@@ -8,7 +8,7 @@ from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs.exceptions import ConfigurationError
 from mkdocs_enumerate_headings_plugin.html_page import HTMLPage
-from mkdocs_enumerate_headings_plugin.exclude import exclude
+from mkdocs_enumerate_headings_plugin.exclude import exclude, include
 from bs4 import BeautifulSoup
 
 logger = logging.getLogger("mkdocs.plugins")
@@ -95,10 +95,13 @@ class EnumerateHeadingsPlugin(BasePlugin):
         markdown_files_processed = {}
 
         for page in nav.pages:
-
+            # Include pages specified in config
+            included_pages = self.config.get("include", ["*"])
             # Exclude pages specified in config
             excluded_pages = self.config.get("exclude", [])
-            if exclude(page.file.src_path, excluded_pages):
+            if not include(page.file.src_path, included_pages) or exclude(
+                page.file.src_path, excluded_pages
+            ):
                 continue
 
             # We need to build the pages in order to find out
