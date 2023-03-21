@@ -20,6 +20,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
         ("toc_depth", config_options.Type(int, default=0)),
         ("increment_across_pages", config_options.Type(bool, default=True)),
         ("restart_increment_after", config_options.Type(list, default=[])),
+        ("include", config_options.Type(list, default=["*"])),
         ("exclude", config_options.Type(list, default=[])),
     )
 
