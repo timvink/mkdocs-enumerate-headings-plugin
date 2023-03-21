@@ -18,7 +18,7 @@ def include(src_path: str, globs: List[str]) -> bool:
     Returns:
         (bool): whether src_path should be excluded
     """
-    return matches_fixed_path(src_path, globs)
+    return matches_nix_path(src_path, globs)
 
 
 def exclude(src_path: str, globs: List[str]) -> bool:
@@ -31,10 +31,10 @@ def exclude(src_path: str, globs: List[str]) -> bool:
     Returns:
         (bool): whether src_path should be excluded
     """
-    return matches_fixed_path(src_path, globs)
+    return matches_nix_path(src_path, globs)
 
 
-def matches_fixed_path(src_path: str, globs: List[str]) -> bool:
+def matches_nix_path(src_path: str, globs: List[str]) -> bool:
     """
     Determines if a src_path matches one of the provided glob patterns.
     Supports globs (e.g. folder/* or *.md).
