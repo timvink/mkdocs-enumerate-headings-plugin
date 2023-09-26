@@ -138,6 +138,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
                 chapter = markdown_files_processed[page.file.abs_src_path]
 
             page.chapter = chapter
+            page.title = f"{chapter}. {page.title}"
 
     def on_post_page(self, output, page, config, **kwargs):
         """
