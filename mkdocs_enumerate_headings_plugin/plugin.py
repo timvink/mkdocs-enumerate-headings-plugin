@@ -22,6 +22,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
         ("restart_increment_after", config_options.Type(list, default=[])),
         ("include", config_options.Type(list, default=["*"])),
         ("exclude", config_options.Type(list, default=[])),
+        ("enumerate_nav", config_options.Type(bool, default=True)),
     )
 
     def on_pre_build(self, config, **kwargs):
@@ -112,6 +113,14 @@ class EnumerateHeadingsPlugin(BasePlugin):
             soup = BeautifulSoup(page.content, "html.parser")
             h1s = soup.find_all("h1")
 
+            if self.config.get("enumerate_nav", True):
+                # If there is no title, insert one from page metadata
+                if len(h1s) == 0:
+                    page.markdown = f"# {page.title}\n\n{page.markdown}"
+                    page.render(config, files)
+                    soup = BeautifulSoup(page.content, "html.parser")
+                    h1s = soup.find_all("h1")
+
             # We assume here a page always has a heading 1, even if empty
             # MkDocs will determine the title based on a simple heuristic
             # (see https://www.mkdocs.org/user-guide/writing-your-docs/#meta-data)
@@ -137,7 +146,8 @@ class EnumerateHeadingsPlugin(BasePlugin):
             else:
                 chapter = markdown_files_processed[page.file.abs_src_path]
 
-            page.chapter = chapter
+            if self.config.get("enumerate_nav", True):
+                page.chapter = chapter
             page.title = f"{chapter}. {page.title}"
 
     def on_post_page(self, output, page, config, **kwargs):
@@ -175,6 +185,9 @@ class EnumerateHeadingsPlugin(BasePlugin):
                 % page.file.src_path
             )
             return output
+
+        if self.config.get("enumerate_nav", True):
+            output = output.replace(f"<h1>{page.chapter}. ", f"<h1>")
 
         # Process HTML
         htmlpage = HTMLPage(output)

@@ -83,6 +83,7 @@ plugins:
           - another_page.md
         restart_increment_after:
           - second_section.md
+        enumerate_nav: true
 ```
 
 - **`toc_depth`** (default `0`): Up to which level the table of contents should be enumerated as well. Default is 0, which means the TOC is not enumerated at all. Max is 6 (showing all enumeration)
@@ -91,6 +92,7 @@ plugins:
 - **`include`** (default *`["*"]`*): Specify a list of page source paths (one per line) that should have enumeration (included in processing by this plugin). This can be useful for example to include enumeration on only one directory. The source path of a page is relative to your `docs/` folder. You can also use [globs](https://docs.python.org/3/library/glob.html) instead of source paths. For example, to include `docs/subfolder/page.md` specify in your `mkdocs.yml` a line under `include:` with `- subfolder/page.md`
 - **`exclude`** (default *not specified*): Specify a list of page source paths (one per line) that should not have enumeration (excluded from processing by this plugin). This can be useful for example to remove enumeration from the front page. The source path of a page is relative to your `docs/` folder. You can also use [globs](https://docs.python.org/3/library/glob.html) instead of source paths. For example, to exclude `docs/subfolder/page.md` specify in your `mkdocs.yml` a line under `exclude:` with `- subfolder/page.md`
 - **`restart_increment_after`** (default *not specified*): Specify a list of page source paths (one per line) where enumeration should be restarted. This can be useful if you have multiple reports or tutorials in one mkdocs site. Paths behave as with `exclude` (can use globs).
+- **`enumerate_nav`** (default `true`): Also add numbers to pages ("chapters") in the navigation.
 
 ## Contributing
 
