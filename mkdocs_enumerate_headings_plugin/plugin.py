@@ -113,14 +113,6 @@ class EnumerateHeadingsPlugin(BasePlugin):
             soup = BeautifulSoup(page.content, "html.parser")
             h1s = soup.find_all("h1")
 
-            if self.config.get("enumerate_nav", True):
-                # If there is no title, insert one from page metadata
-                if len(h1s) == 0:
-                    page.markdown = f"# {page.title}\n\n{page.markdown}"
-                    page.render(config, files)
-                    soup = BeautifulSoup(page.content, "html.parser")
-                    h1s = soup.find_all("h1")
-
             # We assume here a page always has a heading 1, even if empty
             # MkDocs will determine the title based on a simple heuristic
             # (see https://www.mkdocs.org/user-guide/writing-your-docs/#meta-data)
