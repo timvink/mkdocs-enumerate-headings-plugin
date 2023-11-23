@@ -1,6 +1,4 @@
 # coding=utf-8
-## test
-
 
 import logging
 
@@ -184,7 +182,6 @@ class EnumerateHeadingsPlugin(BasePlugin):
         # Set chapter and enumerate the headings
         htmlpage.set_page_chapter(page.chapter)
 
-        #htmlpage.enumerate_headings()
         htmlpage.enumerate_headings(exclude_h1=self.config.get("exclude_h1")) # custom exclude_h1
-        htmlpage.enumerate_toc(depth=self.config.get("toc_depth"))
+        htmlpage.enumerate_toc(depth=self.config.get("toc_depth"),exclude_h1=self.config.get("exclude_h1"))
         return str(htmlpage)
