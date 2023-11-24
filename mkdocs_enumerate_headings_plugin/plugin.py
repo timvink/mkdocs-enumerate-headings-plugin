@@ -1,6 +1,5 @@
 # coding=utf-8
 
-
 import logging
 
 from collections import OrderedDict
@@ -22,6 +21,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
         ("restart_increment_after", config_options.Type(list, default=[])),
         ("include", config_options.Type(list, default=["*"])),
         ("exclude", config_options.Type(list, default=[])),
+        ("exclude_h1", config_options.Type(bool, default=False)),
     )
 
     def on_pre_build(self, config, **kwargs):
@@ -182,6 +182,6 @@ class EnumerateHeadingsPlugin(BasePlugin):
         # Set chapter and enumerate the headings
         htmlpage.set_page_chapter(page.chapter)
 
-        htmlpage.enumerate_headings()
-        htmlpage.enumerate_toc(depth=self.config.get("toc_depth"))
+        htmlpage.enumerate_headings(exclude_h1=self.config.get("exclude_h1"))
+        htmlpage.enumerate_toc(depth=self.config.get("toc_depth"),exclude_h1=self.config.get("exclude_h1"))
         return str(htmlpage)

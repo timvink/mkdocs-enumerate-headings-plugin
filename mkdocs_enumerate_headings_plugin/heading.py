@@ -52,7 +52,7 @@ class Heading:
 
         self.section_numbering[0] = new_chapter
 
-    def section_number_string(self):
+    def section_number_string(self, exclude_h1=False):
         """
         Translate section numbering to a string
         
@@ -77,17 +77,20 @@ class Heading:
 
         # Join to string
         heading_string = [str(x) for x in numbers]
+        if exclude_h1:
+            heading_string.pop(0) # remove h1 from enumeration
         heading_string = ".".join(heading_string)
 
         # Add a trailing dot to level 1 headings
         # For example "1" should be "1."
         if "." not in heading_string:
             heading_string += "."
-
+        if heading_string == ".": 
+            heading_string=""
         return heading_string
 
-    def enumerate(self, add_span_element=False):
-        section_string = self.section_number_string()
+    def enumerate(self, add_span_element=False, exclude_h1=False): 
+        section_string = self.section_number_string(exclude_h1=exclude_h1)
         self.heading.insert(0, " ")
 
         # Note we add both enumerate-headings-plugin and enumerate-heading-plugin
