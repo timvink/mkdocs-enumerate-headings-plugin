@@ -91,7 +91,7 @@ plugins:
 - **`include`** (default *`["*"]`*): Specify a list of page source paths (one per line) that should have enumeration (included in processing by this plugin). This can be useful for example to include enumeration on only one directory. The source path of a page is relative to your `docs/` folder. You can also use [globs](https://docs.python.org/3/library/glob.html) instead of source paths. For example, to include `docs/subfolder/page.md` specify in your `mkdocs.yml` a line under `include:` with `- subfolder/page.md`
 - **`exclude`** (default *not specified*): Specify a list of page source paths (one per line) that should not have enumeration (excluded from processing by this plugin). This can be useful for example to remove enumeration from the front page. The source path of a page is relative to your `docs/` folder. You can also use [globs](https://docs.python.org/3/library/glob.html) instead of source paths. For example, to exclude `docs/subfolder/page.md` specify in your `mkdocs.yml` a line under `exclude:` with `- subfolder/page.md`
 - **`restart_increment_after`** (default *not specified*): Specify a list of page source paths (one per line) where enumeration should be restarted. This can be useful if you have multiple reports or tutorials in one mkdocs site. Paths behave as with `exclude` (can use globs).
-- **`exclude_h1` (default false) exclude the header_1 titles from getting numbered. Header2 titles will get 1, 2, 3. Header3 titles will get 1.1, 1.2, 2.1, 3.1, 3.2, 3.3, 3.4 etc ...
+- **`exclude_h1`** (default `false`) exclude the header_1 titles from getting numbered. (Header2 titles will get 1, 2, 3. Header3 titles will get 1.1, 1.2, 2.1, 3.1, 3.2, 3.3, 3.4)
 
 ## Contributing
 

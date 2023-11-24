@@ -1,5 +1,3 @@
-#from mkdocs_enumerate_headings_plugin.plugin import EnumerateHeadingsPlugin
-
 class Heading:
     def __init__(self, element, soup) -> None:
         """
@@ -87,12 +85,11 @@ class Heading:
         # For example "1" should be "1."
         if "." not in heading_string:
             heading_string += "."
-        if heading_string == ".": # remove enumeration entirely if containing just a dot
+        if heading_string == ".": 
             heading_string=""
         return heading_string
 
-    # def enumerate(self, add_span_element=False
-    def enumerate(self, add_span_element=False, exclude_h1=False): # custom exclude_h1
+    def enumerate(self, add_span_element=False, exclude_h1=False): 
         section_string = self.section_number_string(exclude_h1=exclude_h1)
         self.heading.insert(0, " ")
 
