@@ -44,6 +44,10 @@ def test_enumeration():
     heading.enumerate()
     assert str(heading.heading) == "<h2>2.0.1 _dummy_test</h2>"
 
+    heading = get_heading_class("<h2>_dummy_test_exclude_h1</h2>")
+    heading.section_numbering = [2, 1, 1, 0, 0, 0]
+    heading.enumerate(exclude_h1=True)
+    assert str(heading.heading) == "<h2>1.1 _dummy_test_exclude_h1</h2>"    
 
 def test_span_addition():
 
