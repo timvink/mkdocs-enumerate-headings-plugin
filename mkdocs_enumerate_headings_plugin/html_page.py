@@ -15,7 +15,7 @@ class HTMLPage:
     def __str__(self):
         return str(self.soup)
 
-    def enumerate_headings(self, add_span_element: bool = True, exclude_h1: bool = False): # custom exclude_h1
+    def enumerate_headings(self, add_span_element: bool = True, exclude_h1: bool = False):
         """
         Adds section numbering to all headings in all pages.
 
