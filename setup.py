@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="mkdocs-enumerate-headings-plugin",
-    version="0.6.1",
+    version="0.6.2",
     description="MkDocs Plugin to enumerate the headings (h1-h6) across site pages",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -22,10 +22,10 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3 :: Only",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
     ],
     packages=["mkdocs_enumerate_headings_plugin"],
     entry_points={
