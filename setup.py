@@ -27,7 +27,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
     ],
-    packages=find_packages(),
+    packages=["mkdocs_enumerate_headings_plugin"],
     entry_points={
         "mkdocs.plugins": [
             "enumerate-headings=mkdocs_enumerate_headings_plugin.plugin:EnumerateHeadingsPlugin",
