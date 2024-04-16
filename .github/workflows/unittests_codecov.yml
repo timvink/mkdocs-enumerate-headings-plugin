@@ -42,7 +42,7 @@ jobs:
         pytest --cov=mkdocs_enumerate_headings_plugin --cov-report=xml -vvv
     - name: Upload coverage to Codecov
       if: "contains(env.USING_COVERAGE, matrix.python-version)"
-      uses: codecov/codecov-action@master
+      uses: codecov/codecov-action@main
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: ./coverage.xml
