@@ -22,6 +22,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
         ("restart_increment_after", config_options.Type(list, default=[])),
         ("include", config_options.Type(list, default=["*"])),
         ("exclude", config_options.Type(list, default=[])),
+        ("enumerate_nav", config_options.Type(bool, default=True)),
     )
 
     def on_pre_build(self, config, **kwargs):
@@ -137,6 +138,8 @@ class EnumerateHeadingsPlugin(BasePlugin):
             else:
                 chapter = markdown_files_processed[page.file.abs_src_path]
 
+            if self.config.get("enumerate_nav", True):
+                page.title = f"{chapter}. {page.title}"
             page.chapter = chapter
 
     def on_post_page(self, output, page, config, **kwargs):
@@ -174,6 +177,9 @@ class EnumerateHeadingsPlugin(BasePlugin):
                 % page.file.src_path
             )
             return output
+
+        if self.config.get("enumerate_nav", True):
+            output = output.replace(f"<h1>{page.chapter}. ", "<h1>")
 
         # Process HTML
         htmlpage = HTMLPage(output)
