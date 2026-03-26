@@ -18,6 +18,7 @@ class EnumerateHeadingsPlugin(BasePlugin):
     config_scheme = (
         ("strict", config_options.Type(bool, default=True)),
         ("toc_depth", config_options.Type(int, default=0)),
+        ("start_level", config_options.Type(int, default=1)),
         ("increment_across_pages", config_options.Type(bool, default=True)),
         ("restart_increment_after", config_options.Type(list, default=[])),
         ("include", config_options.Type(list, default=["*"])),
@@ -34,6 +35,12 @@ class EnumerateHeadingsPlugin(BasePlugin):
             raise ConfigurationError(
                 "toc_depth is set to %s, but max is 6. Update plugin settings in mkdocs.yml."
                 % self.config.get("toc_depth")
+            )
+        start_level = self.config.get("start_level", 1)
+        if start_level < 1 or start_level > 6:
+            raise ConfigurationError(
+                "start_level is set to %s, but must be between 1 and 6. Update plugin settings in mkdocs.yml."
+                % start_level
             )
 
     def on_config(self, config, **kwargs):
@@ -182,6 +189,9 @@ class EnumerateHeadingsPlugin(BasePlugin):
         # Set chapter and enumerate the headings
         htmlpage.set_page_chapter(page.chapter)
 
-        htmlpage.enumerate_headings()
-        htmlpage.enumerate_toc(depth=self.config.get("toc_depth"))
+        start_level = self.config.get("start_level", 1)
+        htmlpage.enumerate_headings(start_level=start_level)
+        htmlpage.enumerate_toc(
+            depth=self.config.get("toc_depth"), start_level=start_level
+        )
         return str(htmlpage)

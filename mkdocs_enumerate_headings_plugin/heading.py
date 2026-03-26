@@ -52,10 +52,14 @@ class Heading:
 
         self.section_numbering[0] = new_chapter
 
-    def section_number_string(self):
+    def section_number_string(self, start_level: int = 1):
         """
         Translate section numbering to a string
-        
+
+        Args:
+            start_level: First heading depth (1-6) to include in the visible label;
+                tiers before this are omitted (e.g. 2 omits the H1 tier).
+
         Examples:
             # Basic heading
             [1, 0, 0, 0, 0, 0]
@@ -69,11 +73,20 @@ class Heading:
                 % self.heading.string
             )
 
-        numbers = self.section_numbering
+        if start_level < 1 or start_level > 6:
+            raise ValueError("start_level must be between 1 and 6")
 
-        # Remove any trailing zeros
-        while numbers[-1] == 0:
-            del numbers[-1]
+        numbers = list(self.section_numbering[start_level - 1 :])
+
+        # Remove any trailing zeros (copy only — never mutate section_numbering)
+        while numbers and numbers[-1] == 0:
+            numbers.pop()
+
+        if not numbers:
+            raise AssertionError(
+                "[enumerate-heading-plugin] Heading '%s' has not been assigned any section numbering"
+                % self.heading.string
+            )
 
         # Join to string
         heading_string = [str(x) for x in numbers]
@@ -86,8 +99,8 @@ class Heading:
 
         return heading_string
 
-    def enumerate(self, add_span_element=False):
-        section_string = self.section_number_string()
+    def enumerate(self, add_span_element=False, start_level: int = 1):
+        section_string = self.section_number_string(start_level=start_level)
         self.heading.insert(0, " ")
 
         # Note we add both enumerate-headings-plugin and enumerate-heading-plugin

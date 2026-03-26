@@ -1,0 +1,9 @@
+site_name: test plugin
+use_directory_urls: false
+
+plugins:
+    - search
+    - enumerate-headings:
+        strict: false
+        start_level: 2
+        toc_depth: 6
