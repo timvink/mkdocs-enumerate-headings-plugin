@@ -108,6 +108,12 @@ def test_simple_build(tmp_path):
     check_build(tmp_path, "simple/mkdocs.yml", exit_code=1)
 
 
+def test_simple_start_level_2(tmp_path):
+    tmp_proj = check_build(tmp_path, "simple/mkdocs_start_level_2.yml")
+    check_text_in_page(tmp_proj, "index.html", r'<h1 id="homepage">Homepage</h1>')
+    check_text_in_page(tmp_proj, "index.html", r"1.</span> another heading")
+
+
 def test_simple_notstrict(tmp_path):
 
     tmp_proj = check_build(tmp_path, "simple/mkdocs_notstrict.yml")

@@ -15,27 +15,36 @@ class HTMLPage:
     def __str__(self):
         return str(self.soup)
 
-    def enumerate_headings(self, add_span_element: bool = True):
+    def enumerate_headings(self, add_span_element: bool = True, start_level: int = 1):
         """
         Adds section numbering to all headings in all pages.
 
         Args:
             add_span_element (bool): Wrap numbering with <span class='enumerate-heading-plugin'></span>. Defaults to True.
+            start_level (int): Do not enumerate headings shallower than this (1-6). Default 1.
         """
         for heading in self.headings:
-            heading.enumerate(add_span_element=add_span_element)
+            if heading.depth < start_level:
+                continue
+            heading.enumerate(
+                add_span_element=add_span_element, start_level=start_level
+            )
 
-    def enumerate_toc(self, depth: int = 0):
+    def enumerate_toc(self, depth: int = 0, start_level: int = 1):
         links = self.soup.find_all("a", href=True)
 
         for heading in self.headings:
+            if heading.depth < start_level:
+                continue
             for link in links:
                 if "headerlink" in link.get("class", []):
                     # This avoids enumerating permalinks
                     continue
                 if link.get("href") == heading.anchorlink and heading.depth <= depth:
                     link.insert(0, " ")
-                    link.insert(0, heading.section_number_string())
+                    link.insert(
+                        0, heading.section_number_string(start_level=start_level)
+                    )
 
     def set_page_chapter(self, chapter: int) -> None:
         [h.set_chapter(chapter) for h in self.headings]

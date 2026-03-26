@@ -75,6 +75,7 @@ plugins:
     - enumerate-headings:
         toc_depth: 0
         strict: true
+        start_level: 1
         increment_across_pages: true
         include:
           - "*"
@@ -86,6 +87,7 @@ plugins:
 ```
 
 - **`toc_depth`** (default `0`): Up to which level the table of contents should be enumerated as well. Default is 0, which means the TOC is not enumerated at all. Max is 6 (showing all enumeration)
+- **`start_level`** (default `1`): First heading level that receives a visible number (`1`–`6`). Use `2` to skip numbering on the page title (H1) and start at H2, so the first subsection is `1.` instead of `1.1` when each page has a single H1. Tiers above `start_level` are omitted from the displayed label; the first omitted slot also holds the cross-page chapter counter, so with `increment_across_pages: true` that chapter digit is no longer shown in the label. For per-page `1`, `2`, … style numbering on H2+, pair `start_level: 2` with `increment_across_pages: false` (or accept that chapter order is not reflected in the visible prefix).
 - **`strict`** (default `true`): Raise errors instead of warnings when first heading on a page is not a level one heading (single `#`) and your MkDocs theme has not inserted the page title as a heading 1 for you. Note that in `strict: false` mode the heading numbers might be incorrect between pages and before and after a level 1 heading.
 - **`increment_across_pages`** (default `true`): Increment the chapter number for each new page (in the order they appear in the navigation). If disabled, each page will start from 1.
 - **`include`** (default *`["*"]`*): Specify a list of page source paths (one per line) that should have enumeration (included in processing by this plugin). This can be useful for example to include enumeration on only one directory. The source path of a page is relative to your `docs/` folder. You can also use [globs](https://docs.python.org/3/library/glob.html) instead of source paths. For example, to include `docs/subfolder/page.md` specify in your `mkdocs.yml` a line under `include:` with `- subfolder/page.md`

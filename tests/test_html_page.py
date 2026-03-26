@@ -80,3 +80,15 @@ def test_enumeration(pagename, valid, caplog):
     reference_html_page = load_page("tests/fixtures/pages/%s-enumerated.md" % pagename)
     soup = BeautifulSoup(reference_html_page, "html.parser")
     assert str(html_page) == str(soup)
+
+
+def test_enumeration_start_level_2():
+    page = load_page("tests/fixtures/pages/simple.md")
+    html_page = HTMLPage(page)
+    assert html_page.validate(dummyPage("simple"), {"strict": True})
+    html_page.enumerate_headings(add_span_element=False, start_level=2)
+    reference_html_page = load_page(
+        "tests/fixtures/pages/simple-start-level-2-enumerated.md"
+    )
+    soup = BeautifulSoup(reference_html_page, "html.parser")
+    assert str(html_page) == str(soup)
