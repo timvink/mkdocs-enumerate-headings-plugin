@@ -15,7 +15,7 @@ setup(
     author_email="vinktim@gmail.com",
     license="MIT",
     python_requires=">=3.7",
-    install_requires=["mkdocs>=1.0.4", "beautifulsoup4>=4.9.0"],
+    install_requires=["mkdocs-ng", "beautifulsoup4>=4.9.0"],
     classifiers=[
         "Intended Audience :: Developers",
         "Intended Audience :: Information Technology",
