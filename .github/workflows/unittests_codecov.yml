@@ -8,6 +8,9 @@ on:
     pull_request:
       branches:
         - master
+permissions:
+  contents: read
+
 jobs:
   run:
     name: Run unit tests with codecov upload
@@ -20,6 +23,8 @@ jobs:
         python-version: [3.8, 3.9, "3.10", "3.11", "3.12", "3.13", "3.14", "3.15"]
     steps:
     - uses: actions/checkout@61b9e3751b92087fd0b06925ba6dd6314e06f089 # master
+      with:
+        persist-credentials: false
 
     - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@2241d846baea6518b39bec0fb3859d75cb3d3c50 # master
